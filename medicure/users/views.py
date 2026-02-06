@@ -20,6 +20,8 @@ from django.contrib import messages
 from django.utils.timezone import now
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.mail import send_mail
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from django.conf import settings
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -40,16 +42,24 @@ User = get_user_model()
 import threading
 
 class EmailThread(threading.Thread):
-    def __init__(self, subject, message, from_email, recipient_list):
+    def __init__(self, subject, message, from_email, recipient_list, html_message=None):
         self.subject = subject
         self.message = message
         self.from_email = from_email
         self.recipient_list = recipient_list
+        self.html_message = html_message
         threading.Thread.__init__(self)
 
     def run(self):
         try:
-            send_mail(self.subject, self.message, self.from_email, self.recipient_list, fail_silently=False)
+            send_mail(
+                self.subject, 
+                self.message, 
+                self.from_email, 
+                self.recipient_list, 
+                fail_silently=False, 
+                html_message=self.html_message
+            )
         except Exception as e:
             print(f"Failed to send email: {e}")
 
@@ -207,14 +217,21 @@ def resend_verification_email(request):
             user.refresh_from_db()
             verification_link = f"{settings.SITE_URL}/users/verify-email/{user.verification_token}/"
             
+            # Prepare Email Content
+            html_message = render_to_string('users/email/verification_email_template.html', {
+                'verification_link': verification_link
+            })
+            plain_message = strip_tags(html_message)
+            
             try:
-                send_mail(
+                email_thread = EmailThread(
                     "Resend: Verify your email",
-                    f"Click the link to verify your email (valid for 10 minutes): {verification_link}",
-                    settings.EMAIL_HOST_USER,
+                    plain_message,
+                    settings.DEFAULT_FROM_EMAIL,
                     [user.email],
-                    fail_silently=False,
+                    html_message=html_message
                 )
+                email_thread.start()
                 messages.success(request, "A new verification email has been sent!")
             except Exception as e:
                 print(f"Resend Email Error: {str(e)}")
@@ -307,12 +324,20 @@ class SignUpView(CreateView):
             user.refresh_from_db()
 
             verification_link = f"{settings.SITE_URL}/users/verify-email/{user.verification_token}/"
+            
+            # Prepare Email Content
+            html_message = render_to_string('users/email/verification_email_template.html', {
+                'verification_link': verification_link
+            })
+            plain_message = strip_tags(html_message)
+            
             try:
                 email_thread = EmailThread(
                     "Verify Your Email",
-                    f"Click the link to verify your email (valid for 10 minutes): {verification_link}",
-                    settings.EMAIL_HOST_USER,
-                    [user.email]
+                    plain_message,
+                    settings.DEFAULT_FROM_EMAIL,
+                    [user.email],
+                    html_message=html_message
                 )
                 email_thread.start()
             except Exception as e:
