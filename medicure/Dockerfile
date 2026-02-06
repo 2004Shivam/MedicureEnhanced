@@ -22,8 +22,11 @@ RUN pip install -r requirements.txt
 # Copy project
 COPY . /app/
 
+# Collect static files for WhiteNoise
+RUN python manage.py collectstatic --noinput
+
 # Expose port (not strictly necessary but good practice)
 EXPOSE 8000
 
 # Default command (Production ready)
-CMD ["gunicorn", "medicure.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && gunicorn medicure.wsgi:application --bind 0.0.0.0:8000"]
