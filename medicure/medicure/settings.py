@@ -38,16 +38,18 @@ ALLOWED_HOSTS = ['medicureenhanced.onrender.com', 'medicure-pig9.onrender.com', 
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'  # Use your email provider's SMTP
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
-EMAIL_TIMEOUT = 60  # Helps with debugging timeouts
-EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  # Replace with your email
-EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Replace with your email password
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# EMAIL CONFIGURATION (Anymail + SendGrid)
+EMAIL_BACKEND = "anymail.backends.sendgrid.EmailBackend"
+ANYMAIL = {
+    "SENDGRID_API_KEY": os.getenv("SENDGRID_API_KEY"),
+}
+DEFAULT_FROM_EMAIL = os.getenv("EMAIL_HOST_USER", "noreply@medicureenhanced.onrender.com")
+
+# Legacy SMTP Settings (Kept as fallback/reference, ignored by Anymail)
+# EMAIL_HOST = 'smtp.gmail.com' 
+# EMAIL_PORT = 587
+# EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+# EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 
 
 # Application definition
@@ -93,7 +95,8 @@ INSTALLED_APPS = [
 
     # Third-party apps
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'anymail', # SendGrid Support
 ]
 
 MIDDLEWARE = [

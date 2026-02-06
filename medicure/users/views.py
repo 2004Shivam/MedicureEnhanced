@@ -55,135 +55,64 @@ class EmailThread(threading.Thread):
 
 from django.http import HttpResponse
 import smtplib
-from email.mime.text import MIMEText
-
 def debug_email_view(request):
     try:
         output = []
-        output.append("<h3>SMTP Debug Log</h3>")
+        output.append("<h3>Email Debug Log (SendGrid/Anymail)</h3>")
         
         # Verify request.user exists
         if not hasattr(request, 'user'):
-            return HttpResponse("Error: request has no 'user' attribute. AuthenticationMiddleware missing?", status=200) # Force 200 to see error
+            return HttpResponse("Error: request has no 'user' attribute.", status=200) 
             
         output.append(f"Request User: {request.user}")
             
         if not request.user.is_superuser:
-            return HttpResponse(f"Unauthorized: You must be a logged-in superuser. Current user: {request.user}", status=200)
+            return HttpResponse(f"Unauthorized: You must be a logged-in superuser.", status=200)
             
+        from django.core.mail import send_mail
+        from django.conf import settings
         import os
-        import smtplib
-        from email.mime.text import MIMEText
         
-        email_user = os.environ.get('EMAIL_HOST_USER')
-        email_password = os.environ.get('EMAIL_HOST_PASSWORD')
+        output.append(f"<b>Configuration:</b><br>")
+        output.append(f"EMAIL_BACKEND: {settings.EMAIL_BACKEND}<br>")
+        output.append(f"DEFAULT_FROM_EMAIL: {settings.DEFAULT_FROM_EMAIL}<br>")
         
-        output.append(f"User: {email_user}")
-        output.append("Password: " + ("*" * len(email_password) if email_password else "None"))
+        sg_key = os.environ.get('SENDGRID_API_KEY')
+        output.append(f"SENDGRID_API_KEY Present: {'<b>YES</b>' if sg_key else '<b style=color:red>NO</b>'} <br>")
+        if sg_key:
+             output.append(f"Key Prefix: {sg_key[:4]}...<br>")
         
-        if not email_user or not email_password:
-            output.append("<b>Error: Credentials missing in os.environ</b>")
-            return HttpResponse("<br>".join(output))
-
-        import socket
-        socket.setdefaulttimeout(10) 
+        recipient = request.user.email or settings.EMAIL_HOST_USER
+        output.append(f"Attempting to send to: {recipient}<br>")
         
-        # DNS DEBUGGING
-        output.append("<h3>DNS/Network Diagnostics</h3>")
         try:
-            addr_info = socket.getaddrinfo('smtp.gmail.com', 587)
-            output.append(f"DNS Resolution: {str(addr_info)}")
+            output.append("<b>Sending email via send_mail()...</b><br>")
+            count = send_mail(
+                subject="Test from Render (SendGrid API)",
+                message="This is a test email sent via SendGrid API (Anymail). If you see this, the firewall bypass worked!",
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=[recipient],
+                fail_silently=False
+            )
             
-            # Extract first IPv4
-            ipv4_addr = None
-            for res in addr_info:
-                if res[0] == socket.AF_INET: # AF_INET is IPv4
-                    ipv4_addr = res[4][0]
-                    break
-            
-            if ipv4_addr:
-                output.append(f"Found IPv4: {ipv4_addr}")
+            if count == 1:
+                output.append("<h3 style='color:green'>SUCCESS: Email accepted by SendGrid!</h3>")
+                output.append("Check your stats at app.sendgrid.com to see if it was delivered.")
             else:
-                output.append("<b>WARNING: No IPv4 address found for smtp.gmail.com!</b>")
+                output.append("<b>Warning:</b> send_mail returned 0 sent items.")
+                
         except Exception as e:
-            output.append(f"DNS Error: {e}")
-
-        # HTTP CHECK (Basic Internet)
-        output.append("<br><b>Test 0: Basic Internet (HTTP google.com)</b>")
-        try:
-            import urllib.request
-            with urllib.request.urlopen('https://www.google.com', timeout=5) as response:     
-                output.append(f"HTTP 200 OK - Internet is actively reachable.")
-        except Exception as e:
-            output.append(f"<span style='color:red'>HTTP FAILED: {e} (Container might be offline)</span>")
-
-        # Test 1: Port 587 with Forced IPv4
-        if ipv4_addr:
-            output.append(f"<br><b>Test 1: Smtp.gmail.com:587 (IPv4: {ipv4_addr})</b>")
-            try:
-                # Force IPv4 socket
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.settimeout(10)
-                s.connect((ipv4_addr, 587))
-                output.append("Socket Connected!")
-                
-                # SMTP Handshake
-                server = smtplib.SMTP(timeout=10)
-                server.sock = s
-                server.file = s.makefile('rb')
-                
-                (code, resp) = server.getreply()
-                output.append(f"Server Hello: {code} {resp}")
-                
-                server.starttls()
-                output.append("TLS Started.")
-                server.login(email_user, email_password)
-                output.append("<b>Login Successful!</b>")
-                
-                msg = MIMEText("Debug 587")
-                msg['Subject'] = "Render SMTP Test 587"
-                msg['From'] = email_user
-                msg['To'] = email_user
-                server.sendmail(email_user, [email_user], msg.as_string())
-                server.quit()
-            except Exception as e:
-                output.append(f"<span style='color:red'>Failed: {e}</span>")
-
-        # Test 2: Port 2525 (Alternative)
-        output.append("<br><b>Test 2: Port 2525 (Alternative Port via IPv4)</b>")
-        if ipv4_addr:
-            try:
-                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.settimeout(10)
-                s.connect((ipv4_addr, 2525)) # Connect to IP directly
-                output.append(f"Socket Connected to {ipv4_addr}:2525!")
-                
-                server = smtplib.SMTP(timeout=10)
-                server.sock = s
-                server.file = s.makefile('rb')
-                
-                (code, resp) = server.getreply()
-                output.append(f"Server Hello: {code} {resp}")
-                
-                server.ehlo()
-                server.starttls()
-                output.append("TLS Started.")
-                server.login(email_user, email_password)
-                output.append("<b>Login Successful via 2525! (Solution Found)</b>")
-                
-                msg = MIMEText("Debug 2525")
-                msg['Subject'] = "Render SMTP Test 2525"
-                msg['From'] = email_user
-                msg['To'] = email_user
-                server.sendmail(email_user, [email_user], msg.as_string())
-                
-                server.quit()
-            except Exception as e:
-                output.append(f"<span style='color:red'>Failed 2525: {e}</span>")
-        else:
-            output.append("Skipping 2525 (No IPv4)")
+            output.append(f"<h3 style='color:red'>FAILED: {e}</h3>")
+            if hasattr(e, 'response') and e.response is not None:
+                # Anymail attaches the API response to the exception
+                try:
+                    output.append(f"<b>API Response:</b> <pre>{e.response.text}</pre>")
+                except:
+                    pass
+            import traceback
+            output.append(f"<pre>{traceback.format_exc()}</pre>")
         
-        return HttpResponse("<br>".join(output))
+        return HttpResponse("".join(output))
         
     except Exception as e:
         import traceback
