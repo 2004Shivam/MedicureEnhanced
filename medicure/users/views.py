@@ -58,25 +58,34 @@ import smtplib
 from email.mime.text import MIMEText
 
 def debug_email_view(request):
-    if not request.user.is_superuser:
-        return HttpResponse("Unauthorized", status=403)
-        
-    output = []
-    output.append("<h3>SMTP Debug Log</h3>")
-    
-    email_user = os.environ.get('EMAIL_HOST_USER')
-    email_password = os.environ.get('EMAIL_HOST_PASSWORD')
-    
-    output.append(f"User: {email_user}")
-    output.append(f"Password len: {len(email_password) if email_password else 0}")
-    
-    if not email_user or not email_password:
-        return HttpResponse("<br>".join(output) + "<br><b>Error: Credentials missing</b>")
-
     try:
+        output = []
+        output.append("<h3>SMTP Debug Log</h3>")
+        
+        # Verify request.user exists
+        if not hasattr(request, 'user'):
+            return HttpResponse("Error: request has no 'user' attribute. AuthenticationMiddleware missing?", status=500)
+            
+        if not request.user.is_superuser:
+            return HttpResponse("Unauthorized: You must be a logged-in superuser.", status=403)
+            
+        import os
+        import smtplib
+        from email.mime.text import MIMEText
+        
+        email_user = os.environ.get('EMAIL_HOST_USER')
+        email_password = os.environ.get('EMAIL_HOST_PASSWORD')
+        
+        output.append(f"User: {email_user}")
+        output.append("Password: " + ("*" * len(email_password) if email_password else "None"))
+        
+        if not email_user or not email_password:
+            output.append("<b>Error: Credentials missing in os.environ</b>")
+            return HttpResponse("<br>".join(output))
+
         output.append("Connecting to smtp.gmail.com:587...")
         server = smtplib.SMTP('smtp.gmail.com', 587)
-        # server.set_debuglevel(1) # Cannot capture stdout easily
+        # server.set_debuglevel(1) 
         
         output.append("Starting TLS...")
         server.starttls()
@@ -99,7 +108,7 @@ def debug_email_view(request):
         
     except Exception as e:
         import traceback
-        return HttpResponse("<br>".join(output) + f"<br><br><b>Error: {str(e)}</b><br><pre>{traceback.format_exc()}</pre>")
+        return HttpResponse(f"<h3>Critical Error</h3><p>{str(e)}</p><pre>{traceback.format_exc()}</pre>")
 
 class VerifyEmailView(View):
     def get(self, request, token):
