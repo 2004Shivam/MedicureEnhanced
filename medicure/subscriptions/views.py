@@ -283,3 +283,9 @@ def user_details(request, user_id):
     except User.DoesNotExist:
         return JsonResponse({'error': 'User not found'}, status=404)
 
+
+@login_required
+def subscription_page_view(request):
+    return render(request, "subscription/subscription.html", {
+        "RAZORPAY_KEY_ID": settings.RAZORPAY_KEY_ID
+    })
