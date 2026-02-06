@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path('create/', views.CreateSubscriptionView.as_view(), name='create-subscription'),
     path('verify/', views.VerifySubscriptionView.as_view(), name='verify-subscription'),
-    path("subscribe/", TemplateView.as_view(template_name="subscription/subscription.html"), name="subscription-page"),
+    path("subscribe/", views.subscription_page_view, name="subscription-page"),
     path('admin/doctors/pending/', views.pending_doctors, name='pending_doctors'),
     path('admin/doctors/update/<int:doctor_id>/', views.update_doctor_status, name='update_doctor_status'),
     path('admin/users/list/', views.user_list, name='user_list'),
