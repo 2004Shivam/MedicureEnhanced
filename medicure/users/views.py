@@ -86,54 +86,61 @@ def debug_email_view(request):
             return HttpResponse("<br>".join(output))
 
         import socket
-        socket.setdefaulttimeout(10) # Set global socket timeout to 10 seconds
+        socket.setdefaulttimeout(10) 
         
-        output.append("<b>Test 1: Connecting to smtp.gmail.com:587 (TLS)...</b>")
+        # DNS DEBUGGING
+        output.append("<h3>DNS/Network Diagnostics</h3>")
+        try:
+            addr_info = socket.getaddrinfo('smtp.gmail.com', 587)
+            output.append(f"DNS Resolution: {str(addr_info)}")
+            
+            # Extract first IPv4
+            ipv4_addr = None
+            for res in addr_info:
+                if res[0] == socket.AF_INET: # AF_INET is IPv4
+                    ipv4_addr = res[4][0]
+                    break
+            
+            if ipv4_addr:
+                output.append(f"Found IPv4: {ipv4_addr}")
+            else:
+                output.append("<b>WARNING: No IPv4 address found for smtp.gmail.com!</b>")
+        except Exception as e:
+            output.append(f"DNS Error: {e}")
+
+        output.append("<br><b>Test 1: Standard Connection (smtp.gmail.com:587)</b>")
         try:
             server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
-            output.append("Connected to 587!")
-            output.append("Starting TLS...")
-            server.starttls()
-            output.append("TLS Started!")
-            output.append("Logging in...")
-            server.login(email_user, email_password)
-            output.append("Login successful!")
-            
-            msg = MIMEText("This is a test email from the Render debug view (Port 587).")
-            msg['Subject'] = "Render SMTP Test (587)"
-            msg['From'] = email_user
-            msg['To'] = email_user
-            
-            server.sendmail(email_user, [email_user], msg.as_string())
-            output.append("<b>Email sent successfully via Port 587!</b>")
+            output.append("Connected!")
             server.quit()
-            return HttpResponse("<br>".join(output))
-            
         except Exception as e:
-            output.append(f"<span style='color:red'>Failed Port 587: {str(e)}</span>")
-            
-        output.append("<br><b>Test 2: Connecting to smtp.gmail.com:465 (SSL)...</b>")
-        try:
-            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10)
-            output.append("Connected to 465!")
-            output.append("Logging in...")
-            server.login(email_user, email_password)
-            output.append("Login successful!")
-            
-            msg = MIMEText("This is a test email from the Render debug view (Port 465).")
-            msg['Subject'] = "Render SMTP Test (465)"
-            msg['From'] = email_user
-            msg['To'] = email_user
-            
-            server.sendmail(email_user, [email_user], msg.as_string())
-            output.append("<b>Email sent successfully via Port 465!</b>")
-            server.quit()
-            return HttpResponse("<br>".join(output))
-            
-        except Exception as e:
-            output.append(f"<span style='color:red'>Failed Port 465: {str(e)}</span>")
-            
-        return HttpResponse("<br>".join(output) + "<br><b>Both methods failed.</b>")
+            output.append(f"<span style='color:red'>Failed: {e}</span>")
+
+        if ipv4_addr:
+            output.append(f"<br><b>Test 2: Forced IPv4 Connection ({ipv4_addr}:587)</b>")
+            try:
+                # We connect to IP directly, but we might have TLS issues (hostname mismatch)
+                # This is just to test if NETWORK is reachable.
+                server = smtplib.SMTP(ipv4_addr, 587, timeout=10)
+                output.append(f"Connected to {ipv4_addr}!")
+                output.append("Starting TLS (Expect hostname mismatch warning)...")
+                # We can't easily perform full TLS handshake with smtplib against IP without patching
+                # But if we got here, network is reachable.
+                
+                # Try to login anyway
+                try:
+                    server.starttls()
+                    server.login(email_user, email_password)
+                    # We won't send email here, just proving connectivity
+                    output.append("<b>Login successful via IPv4! (Fix confirmed)</b>")
+                except Exception as inner_e:
+                     output.append(f"TLS/Login failed (Expected): {inner_e}")
+                     
+                server.quit()
+            except Exception as e:
+                output.append(f"<span style='color:red'>Failed IPv4: {e}</span>")
+        
+        return HttpResponse("<br>".join(output))
         
     except Exception as e:
         import traceback
