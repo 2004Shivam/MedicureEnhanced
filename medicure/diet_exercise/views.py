@@ -209,27 +209,36 @@ class GeneratePlansView(View):
 class PlanResultsView(LoginRequiredMixin, TemplateView):
     template_name = 'diet_exercise/plan_results.html'
 
+    def get(self, request, *args, **kwargs):
+        try:
+            self.profile = UserHealthProfile.objects.get(user=request.user)
+            self.diet_plan = DietPlan.objects.filter(user=request.user).latest('date_created')
+            self.exercise_plan = ExercisePlan.objects.filter(user=request.user).latest('date_created')
+        except (UserHealthProfile.DoesNotExist, DietPlan.DoesNotExist, ExercisePlan.DoesNotExist):
+            messages.error(request, "No plans found. Please generate new plans.")
+            return redirect('diet_exercise:health-profile')
+        
+        return super().get(request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        context['profile'] = self.profile
+        
+        # Parse JSON meal data
         try:
-            context['profile'] = UserHealthProfile.objects.get(user=self.request.user)
-            diet_plan = DietPlan.objects.filter(user=self.request.user).latest('date_created')
-            
-            # Parse JSON meal data
-            diet_plan.meal_data = {
-                'breakfast': json.loads(diet_plan.breakfast) if diet_plan.breakfast else [],
-                'lunch': json.loads(diet_plan.lunch) if diet_plan.lunch else [],
-                'dinner': json.loads(diet_plan.dinner) if diet_plan.dinner else [],
-                'snacks': json.loads(diet_plan.snacks) if diet_plan.snacks else []
+            self.diet_plan.meal_data = {
+                'breakfast': json.loads(self.diet_plan.breakfast) if self.diet_plan.breakfast else [],
+                'lunch': json.loads(self.diet_plan.lunch) if self.diet_plan.lunch else [],
+                'dinner': json.loads(self.diet_plan.dinner) if self.diet_plan.dinner else [],
+                'snacks': json.loads(self.diet_plan.snacks) if self.diet_plan.snacks else []
             }
+        except json.JSONDecodeError:
+            self.diet_plan.meal_data = {}
             
-            context['diet_plan'] = diet_plan
-            context['exercise_plan'] = ExercisePlan.objects.filter(user=self.request.user).latest('date_created')
-            return context
-            
-        except (UserHealthProfile.DoesNotExist, DietPlan.DoesNotExist, ExercisePlan.DoesNotExist) as e:
-            messages.error(self.request, "No plans found. Please generate new plans.")
-            return redirect('diet_exercise:health-profile')
+        context['diet_plan'] = self.diet_plan
+        context['exercise_plan'] = self.exercise_plan
+        return context
 
 
 class DietPlanView(LoginRequiredMixin, DetailView):
