@@ -108,37 +108,80 @@ def debug_email_view(request):
         except Exception as e:
             output.append(f"DNS Error: {e}")
 
-        output.append("<br><b>Test 1: Standard Connection (smtp.gmail.com:587)</b>")
+        # HTTP CHECK (Basic Internet)
+        output.append("<br><b>Test 0: Basic Internet (HTTP google.com)</b>")
         try:
-            server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
-            output.append("Connected!")
-            server.quit()
+            import urllib.request
+            with urllib.request.urlopen('https://www.google.com', timeout=5) as response:     
+                output.append(f"HTTP 200 OK - Internet is actively reachable.")
         except Exception as e:
-            output.append(f"<span style='color:red'>Failed: {e}</span>")
+            output.append(f"<span style='color:red'>HTTP FAILED: {e} (Container might be offline)</span>")
 
+        # Test 1: Port 587 with Forced IPv4
         if ipv4_addr:
-            output.append(f"<br><b>Test 2: Forced IPv4 Connection ({ipv4_addr}:587)</b>")
+            output.append(f"<br><b>Test 1: Smtp.gmail.com:587 (IPv4: {ipv4_addr})</b>")
             try:
-                # We connect to IP directly, but we might have TLS issues (hostname mismatch)
-                # This is just to test if NETWORK is reachable.
-                server = smtplib.SMTP(ipv4_addr, 587, timeout=10)
-                output.append(f"Connected to {ipv4_addr}!")
-                output.append("Starting TLS (Expect hostname mismatch warning)...")
-                # We can't easily perform full TLS handshake with smtplib against IP without patching
-                # But if we got here, network is reachable.
+                # Force IPv4 socket
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(10)
+                s.connect((ipv4_addr, 587))
+                output.append("Socket Connected!")
                 
-                # Try to login anyway
-                try:
-                    server.starttls()
-                    server.login(email_user, email_password)
-                    # We won't send email here, just proving connectivity
-                    output.append("<b>Login successful via IPv4! (Fix confirmed)</b>")
-                except Exception as inner_e:
-                     output.append(f"TLS/Login failed (Expected): {inner_e}")
-                     
+                # SMTP Handshake
+                server = smtplib.SMTP(timeout=10)
+                server.sock = s
+                server.file = s.makefile('rb')
+                
+                (code, resp) = server.getreply()
+                output.append(f"Server Hello: {code} {resp}")
+                
+                server.starttls()
+                output.append("TLS Started.")
+                server.login(email_user, email_password)
+                output.append("<b>Login Successful!</b>")
+                
+                msg = MIMEText("Debug 587")
+                msg['Subject'] = "Render SMTP Test 587"
+                msg['From'] = email_user
+                msg['To'] = email_user
+                server.sendmail(email_user, [email_user], msg.as_string())
                 server.quit()
             except Exception as e:
-                output.append(f"<span style='color:red'>Failed IPv4: {e}</span>")
+                output.append(f"<span style='color:red'>Failed: {e}</span>")
+
+        # Test 2: Port 2525 (Alternative)
+        output.append("<br><b>Test 2: Port 2525 (Alternative Port via IPv4)</b>")
+        if ipv4_addr:
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.settimeout(10)
+                s.connect((ipv4_addr, 2525)) # Connect to IP directly
+                output.append(f"Socket Connected to {ipv4_addr}:2525!")
+                
+                server = smtplib.SMTP(timeout=10)
+                server.sock = s
+                server.file = s.makefile('rb')
+                
+                (code, resp) = server.getreply()
+                output.append(f"Server Hello: {code} {resp}")
+                
+                server.ehlo()
+                server.starttls()
+                output.append("TLS Started.")
+                server.login(email_user, email_password)
+                output.append("<b>Login Successful via 2525! (Solution Found)</b>")
+                
+                msg = MIMEText("Debug 2525")
+                msg['Subject'] = "Render SMTP Test 2525"
+                msg['From'] = email_user
+                msg['To'] = email_user
+                server.sendmail(email_user, [email_user], msg.as_string())
+                
+                server.quit()
+            except Exception as e:
+                output.append(f"<span style='color:red'>Failed 2525: {e}</span>")
+        else:
+            output.append("Skipping 2525 (No IPv4)")
         
         return HttpResponse("<br>".join(output))
         
