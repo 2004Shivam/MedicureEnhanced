@@ -67,7 +67,6 @@ def debug_email_view(request):
             return HttpResponse("Error: request has no 'user' attribute. AuthenticationMiddleware missing?", status=200) # Force 200 to see error
             
         output.append(f"Request User: {request.user}")
-        output.append(f"Auth: {request.auth}")
             
         if not request.user.is_superuser:
             return HttpResponse(f"Unauthorized: You must be a logged-in superuser. Current user: {request.user}", status=200)
