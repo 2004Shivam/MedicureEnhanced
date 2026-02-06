@@ -168,72 +168,84 @@ class SignUpView(CreateView):
     success_url = reverse_lazy('email_verification_pending')
 
     def form_valid(self, form):
-        CustomUser.cleanup_unverified_users()
-        user_type = self.request.POST.get('user_type')
-
-        if user_type not in ['patient', 'doctor', 'admin']:
-            form.add_error(None, "Invalid user type selected")
-            return self.form_invalid(form)
-        
-        existing_user = User.objects.filter(email=form.cleaned_data['email']).first()
-        if existing_user and not existing_user.is_verified:
-            if existing_user.verification_expiry and existing_user.verification_expiry < now():
-                existing_user.delete()
-
-        response = super().form_valid(form)
-        user = form.instance
-        
-        if user_type == 'doctor':
-            user.is_doctor = True
-            user.is_patient = False
-            doctor_profile = DoctorProfile.objects.create(
-                user=user,
-                specialization=form.cleaned_data['specialization'],
-                license_number=form.cleaned_data['license_number'],
-                experience=form.cleaned_data['experience'],
-                is_approved=False
-            )
-            user.save()
-            messages.success(
-                self.request, 
-                'Doctor account created! Please wait for admin approval and verify your email.'
-            )
-
-        elif user_type == 'admin':
-            user.is_staff = True
-            user.is_superuser = True
-            user.is_patient = False
-            messages.success(
-                self.request, 
-                'Admin account created! Please verify your email.'
-            )
-
-        else:  # patient
-            user.is_patient = True
-            messages.success(
-                self.request, 
-                'Patient account created! Please verify your email.'
-            )
-
-        user.save()
-        user.generate_verification_token()
-        user.refresh_from_db()
-
-        verification_link = f"{settings.SITE_URL}/users/verify-email/{user.verification_token}/"
         try:
-            send_mail(
-                "Verify Your Email",
-                f"Click the link to verify your email (valid for 10 minutes): {verification_link}",
-                settings.EMAIL_HOST_USER,
-                [user.email],
-                fail_silently=False,
-            )
-        except Exception as e:
-            messages.warning(self.request, f"Account created, but failed to send verification email: {str(e)}")
-            # Log the full error to console for debugging
-            print(f"Email Error: {str(e)}")
+            CustomUser.cleanup_unverified_users()
+            user_type = self.request.POST.get('user_type')
 
-        return response
+            if user_type not in ['patient', 'doctor', 'admin']:
+                form.add_error(None, "Invalid user type selected")
+                return self.form_invalid(form)
+            
+            existing_user = User.objects.filter(email=form.cleaned_data['email']).first()
+            if existing_user and not existing_user.is_verified:
+                if existing_user.verification_expiry and existing_user.verification_expiry < now():
+                    existing_user.delete()
+
+            # Save the user first
+            user = form.save(commit=False)
+            
+            if user_type == 'doctor':
+                user.is_doctor = True
+                user.is_patient = False
+            elif user_type == 'admin':
+                user.is_staff = True
+                user.is_superuser = True
+                user.is_patient = False
+            else:  # patient
+                user.is_patient = True
+            
+            user.save()
+            
+            # Create doctor profile if needed
+            if user_type == 'doctor':
+                DoctorProfile.objects.create(
+                    user=user,
+                    specialization=form.cleaned_data.get('specialization', 'General'),
+                    license_number=form.cleaned_data.get('license_number', ''),
+                    experience=form.cleaned_data.get('experience', 0),
+                    is_approved=False
+                )
+                messages.success(
+                    self.request, 
+                    'Doctor account created! Please wait for admin approval and verify your email.'
+                )
+            elif user_type == 'admin':
+                messages.success(
+                    self.request, 
+                    'Admin account created! Please verify your email.'
+                )
+            else:
+                messages.success(
+                    self.request, 
+                    'Patient account created! Please verify your email.'
+                )
+
+            # Generate verification token and send email
+            user.generate_verification_token()
+            user.refresh_from_db()
+
+            verification_link = f"{settings.SITE_URL}/users/verify-email/{user.verification_token}/"
+            try:
+                send_mail(
+                    "Verify Your Email",
+                    f"Click the link to verify your email (valid for 10 minutes): {verification_link}",
+                    settings.EMAIL_HOST_USER,
+                    [user.email],
+                    fail_silently=False,
+                )
+            except Exception as e:
+                messages.warning(self.request, f"Account created, but failed to send verification email: {str(e)}")
+                print(f"Email Error: {str(e)}")
+
+            return redirect('email_verification_pending')
+            
+        except Exception as e:
+            # Log the error for debugging
+            print(f"Signup Error: {str(e)}")
+            import traceback
+            traceback.print_exc()
+            messages.error(self.request, f"An error occurred during signup. Please try again.")
+            return self.form_invalid(form)
 
     def form_invalid(self, form):
         for field, errors in form.errors.items():
