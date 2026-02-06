@@ -47,6 +47,7 @@ EMAIL_USE_SSL = False
 EMAIL_TIMEOUT = 60  # Helps with debugging timeouts
 EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")  # Replace with your email
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")  # Replace with your email password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Application definition
