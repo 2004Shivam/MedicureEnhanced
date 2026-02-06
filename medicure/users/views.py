@@ -64,10 +64,13 @@ def debug_email_view(request):
         
         # Verify request.user exists
         if not hasattr(request, 'user'):
-            return HttpResponse("Error: request has no 'user' attribute. AuthenticationMiddleware missing?", status=500)
+            return HttpResponse("Error: request has no 'user' attribute. AuthenticationMiddleware missing?", status=200) # Force 200 to see error
+            
+        output.append(f"Request User: {request.user}")
+        output.append(f"Auth: {request.auth}")
             
         if not request.user.is_superuser:
-            return HttpResponse("Unauthorized: You must be a logged-in superuser.", status=403)
+            return HttpResponse(f"Unauthorized: You must be a logged-in superuser. Current user: {request.user}", status=200)
             
         import os
         import smtplib
