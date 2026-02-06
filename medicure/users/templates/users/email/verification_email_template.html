@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email - Medicure</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+            color: #333333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        .header {
+            background-color: #2563eb;
+            /* Primary Blue */
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 32px;
+            text-align: center;
+        }
+
+        .content p {
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #2563eb;
+            color: #ffffff !important;
+            padding: 14px 28px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #1d4ed8;
+        }
+
+        .footer {
+            background-color: #f8fafc;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .link-text {
+            word-break: break-all;
+            color: #2563eb;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Medicure Enhanced</h1>
+        </div>
+        <div class="content">
+            <h2>Verify Your Email Address</h2>
+            <p>Thanks for getting started with Medicure! We want to make sure it's really you. Please click the button
+                below to verify your email address.</p>
+
+            <a href="{{ verification_link }}" class="btn">Verify Email</a>
+
+            <p style="margin-top: 30px; font-size: 14px; color: #666;">
+                This link will expire in 10 minutes.<br>
+                If you didn't create an account, you can safely ignore this email.
+            </p>
+        </div>
+        <div class="footer">
+            <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+            <p><a href="{{ verification_link }}" class="link-text">{{ verification_link }}</a></p>
+            <p>&copy; 2026 Medicure Enhanced. All rights reserved.</p>
+        </div>
+    </div>
+</body>
+
+</html>
