@@ -36,6 +36,22 @@ from .models import CustomUser  # Add this import at the top of views.py
 
 User = get_user_model()
 
+import threading
+
+class EmailThread(threading.Thread):
+    def __init__(self, subject, message, from_email, recipient_list):
+        self.subject = subject
+        self.message = message
+        self.from_email = from_email
+        self.recipient_list = recipient_list
+        threading.Thread.__init__(self)
+
+    def run(self):
+        try:
+            send_mail(self.subject, self.message, self.from_email, self.recipient_list, fail_silently=False)
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+
 class VerifyEmailView(View):
     def get(self, request, token):
         try:
@@ -169,7 +185,7 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         try:
-            CustomUser.cleanup_unverified_users()
+            # CustomUser.cleanup_unverified_users()
             user_type = self.request.POST.get('user_type')
 
             if user_type not in ['patient', 'doctor', 'admin']:
@@ -226,13 +242,13 @@ class SignUpView(CreateView):
 
             verification_link = f"{settings.SITE_URL}/users/verify-email/{user.verification_token}/"
             try:
-                send_mail(
+                email_thread = EmailThread(
                     "Verify Your Email",
                     f"Click the link to verify your email (valid for 10 minutes): {verification_link}",
                     settings.EMAIL_HOST_USER,
-                    [user.email],
-                    fail_silently=False,
+                    [user.email]
                 )
+                email_thread.start()
             except Exception as e:
                 messages.warning(self.request, f"Account created, but failed to send verification email: {str(e)}")
                 print(f"Email Error: {str(e)}")
