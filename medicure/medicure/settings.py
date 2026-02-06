@@ -33,7 +33,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure--0_emgcrguu*ko=f_uki8
 DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
 # Updated hosts for deployment
-ALLOWED_HOSTS = ['medicure-pig9.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['medicureenhanced.onrender.com', 'medicure-pig9.onrender.com', 'localhost', '127.0.0.1']
   # For demo purposes only - restrict this in production
 
 
