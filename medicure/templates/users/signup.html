@@ -11,27 +11,34 @@
     body {
         background: linear-gradient(to right, #6EE7B7, #3B82F6);
     }
+
     .bg-pattern {
         background-image: url('https://www.transparenttextures.com/patterns/white-paper.png');
     }
+
     .password-strength {
         height: 4px;
         transition: width 0.3s ease;
     }
+
     .input-focus {
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
+
     .input-focus:focus {
         border-color: #3B82F6;
         box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
     }
+
     .illustration-container {
         transition: opacity 0.5s ease, transform 0.5s ease;
     }
+
     .illustration-container.hidden {
         opacity: 0;
         transform: translateY(20px);
     }
+
     .validation-item {
         display: flex;
         align-items: center;
@@ -39,13 +46,16 @@
         font-size: 0.875rem;
         margin-bottom: 0.5rem;
     }
+
     .validation-icon {
         width: 16px;
         height: 16px;
     }
+
     .valid-icon {
         color: #10B981;
     }
+
     .invalid-icon {
         color: #EF4444;
     }
@@ -54,29 +64,36 @@
 
 {% block content %}
 <div class="min-h-screen flex items-center justify-center p-6 bg-pattern">
-    <div class="bg-white shadow-2xl rounded-2xl w-full max-w-4xl p-8 transform transition-all duration-500 hover:scale-[1.01]">
+    <div
+        class="bg-white shadow-2xl rounded-2xl w-full max-w-4xl p-8 transform transition-all duration-500 hover:scale-[1.01]">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Illustration Section -->
             <div class="illustration-container flex flex-col justify-center items-center">
                 <!-- Patient Illustration -->
                 <div id="patient-illustration" class="illustration-content">
-                    <img src="{% static 'images/patient_illustration.jpg' %}" alt="Patient Illustration" class="rounded-lg shadow-lg mb-6">
+                    <img src="{% static 'images/patient_illustration.jpg' %}" alt="Patient Illustration"
+                        class="rounded-lg shadow-lg mb-6">
                     <h2 class="text-2xl font-bold text-blue-600 mb-2">Welcome, Patient!</h2>
-                    <p class="text-gray-600 text-center">Manage your health records, book appointments, and stay connected with your doctors.</p>
+                    <p class="text-gray-600 text-center">Manage your health records, book appointments, and stay
+                        connected with your doctors.</p>
                 </div>
 
                 <!-- Doctor Illustration -->
                 <div id="doctor-illustration" class="illustration-content hidden">
-                    <img src="{% static 'images/doctor_illustration.jpg' %}" alt="Doctor Illustration" class="rounded-lg shadow-lg mb-6">
+                    <img src="{% static 'images/doctor_illustration.jpg' %}" alt="Doctor Illustration"
+                        class="rounded-lg shadow-lg mb-6">
                     <h2 class="text-2xl font-bold text-green-600 mb-2">Welcome, Doctor!</h2>
-                    <p class="text-gray-600 text-center">Access patient records, manage appointments, and provide the best care.</p>
+                    <p class="text-gray-600 text-center">Access patient records, manage appointments, and provide the
+                        best care.</p>
                 </div>
 
                 <!-- Admin Illustration -->
                 <div id="admin-illustration" class="illustration-content hidden">
-                    <img src="{% static 'images/admin_illustration.jpg' %}" alt="Admin Illustration" class="rounded-lg shadow-lg mb-6">
+                    <img src="{% static 'images/admin_illustration.jpg' %}" alt="Admin Illustration"
+                        class="rounded-lg shadow-lg mb-6">
                     <h2 class="text-2xl font-bold text-purple-600 mb-2">Welcome, Admin!</h2>
-                    <p class="text-gray-600 text-center">Manage the platform, oversee users, and ensure smooth operations.</p>
+                    <p class="text-gray-600 text-center">Manage the platform, oversee users, and ensure smooth
+                        operations.</p>
                 </div>
             </div>
 
@@ -96,25 +113,28 @@
                             <!-- Patient Option -->
                             <label class="relative block group">
                                 <input type="radio" name="user_type" value="patient" class="peer hidden">
-                                <div class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-blue-500 hover:shadow-lg peer-checked:border-blue-500 peer-checked:bg-blue-50">
+                                <div
+                                    class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-blue-500 hover:shadow-lg peer-checked:border-blue-500 peer-checked:bg-blue-50">
                                     <i class="fas fa-user-circle text-3xl mb-2 text-blue-600"></i>
                                     <h3 class="font-semibold">Patient</h3>
                                 </div>
                             </label>
-                            
+
                             <!-- Doctor Option -->
                             <label class="relative block group">
                                 <input type="radio" name="user_type" value="doctor" class="peer hidden">
-                                <div class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-green-500 hover:shadow-lg peer-checked:border-green-500 peer-checked:bg-green-50">
+                                <div
+                                    class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-green-500 hover:shadow-lg peer-checked:border-green-500 peer-checked:bg-green-50">
                                     <i class="fas fa-user-md text-3xl mb-2 text-green-600"></i>
                                     <h3 class="font-semibold">Doctor</h3>
                                 </div>
                             </label>
-                    
+
                             <!-- Admin Option -->
                             <label class="relative block group">
                                 <input type="radio" name="user_type" value="admin" class="peer hidden">
-                                <div class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-purple-500 hover:shadow-lg peer-checked:border-purple-500 peer-checked:bg-purple-50">
+                                <div
+                                    class="p-4 text-center border-2 rounded-lg cursor-pointer transition-all duration-300 border-gray-200 hover:border-purple-500 hover:shadow-lg peer-checked:border-purple-500 peer-checked:bg-purple-50">
                                     <i class="fas fa-user-shield text-3xl mb-2 text-purple-600"></i>
                                     <h3 class="font-semibold">Admin</h3>
                                 </div>
@@ -128,27 +148,32 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">First Name</label>
-                            <input type="text" name="first_name" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
+                            <input type="text" name="first_name"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Last Name</label>
-                            <input type="text" name="last_name" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
+                            <input type="text" name="last_name"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-gray-700 font-medium mb-2">Email</label>
-                        <input type="email" name="email" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
+                        <input type="email" name="email"
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Password</label>
-                            <input type="password" name="password1" id="password1" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
+                            <input type="password" name="password1" id="password1"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
                         </div>
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Confirm Password</label>
-                            <input type="password" name="password2" id="password2" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
+                            <input type="password" name="password2" id="password2"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" required>
                         </div>
                     </div>
 
@@ -189,7 +214,8 @@
                     <div id="doctor-fields" class="hidden space-y-4">
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Specialization</label>
-                            <select name="specialization" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
+                            <select name="specialization"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
                                 <option value="">Select Specialization</option>
                                 <option value="general">General Physician</option>
                                 <option value="cardiology">Cardiologist</option>
@@ -198,15 +224,17 @@
                                 <option value="pediatrics">Pediatrician</option>
                             </select>
                         </div>
-                        
+
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">License Number</label>
-                            <input type="text" name="license_number" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
+                            <input type="text" name="license_number"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
                         </div>
 
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Experience (Years)</label>
-                            <input type="number" name="experience" min="0" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
+                            <input type="number" name="experience" min="0"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus">
                         </div>
                     </div>
 
@@ -214,17 +242,21 @@
                     <div id="admin-fields" class="hidden space-y-4">
                         <div>
                             <label class="block text-gray-700 font-medium mb-2">Admin Code</label>
-                            <input type="text" name="admin_code" class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus" placeholder="Enter admin verification code">
+                            <input type="text" name="admin_code"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md input-focus"
+                                placeholder="Enter admin verification code">
                             <p class="text-sm text-gray-500 mt-1">This code is required for admin registration</p>
                         </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-[1.02] active:scale-95">
+                    <button type="submit"
+                        class="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 transform hover:scale-[1.02] active:scale-95">
                         Create Account
                     </button>
 
                     <p class="text-center text-gray-600 mt-4">
-                        Already have an account? <a href="{% url 'login' %}" class="text-blue-600 font-bold hover:underline">Login</a>
+                        Already have an account? <a href="{% url 'login' %}"
+                            class="text-blue-600 font-bold hover:underline">Login</a>
                     </p>
                 </form>
             </div>
@@ -235,148 +267,160 @@
 
 {% block extra_js %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const userTypeInputs = document.querySelectorAll('input[name="user_type"]');
-    const doctorFields = document.getElementById('doctor-fields');
-    const adminFields = document.getElementById('admin-fields');
-    const password1 = document.getElementById('password1');
-    const password2 = document.getElementById('password2');
-    const passwordStrength = document.getElementById('passwordStrength');
-    const form = document.getElementById('signupForm');
-    // Added reference to the user type error element
-    const userTypeError = document.getElementById('user-type-error');
+    document.addEventListener('DOMContentLoaded', function () {
+        const userTypeInputs = document.querySelectorAll('input[name="user_type"]');
+        const doctorFields = document.getElementById('doctor-fields');
+        const adminFields = document.getElementById('admin-fields');
+        const password1 = document.getElementById('password1');
+        const password2 = document.getElementById('password2');
+        const passwordStrength = document.getElementById('passwordStrength');
+        const form = document.getElementById('signupForm');
+        // Added reference to the user type error element
+        const userTypeError = document.getElementById('user-type-error');
 
-    const illustrations = {
-        patient: document.getElementById('patient-illustration'),
-        doctor: document.getElementById('doctor-illustration'),
-        admin: document.getElementById('admin-illustration')
-    };
+        const illustrations = {
+            patient: document.getElementById('patient-illustration'),
+            doctor: document.getElementById('doctor-illustration'),
+            admin: document.getElementById('admin-illustration')
+        };
 
-    // Password validation requirements
-    const requirements = {
-        length: password => password.length >= 8,
-        uppercase: password => /[A-Z]/.test(password),
-        lowercase: password => /[a-z]/.test(password),
-        number: password => /[0-9]/.test(password),
-        special: password => /[!@#$%^&*(),.?":{}|<>]/.test(password),
-        match: (password, confirmPassword) => password === confirmPassword && password !== ''
-    };
+        // Password validation requirements
+        const requirements = {
+            length: password => password.length >= 8,
+            uppercase: password => /[A-Z]/.test(password),
+            lowercase: password => /[a-z]/.test(password),
+            number: password => /[0-9]/.test(password),
+            special: password => /[!@#$%^&*(),.?":{}|<>]/.test(password),
+            match: (password, confirmPassword) => password === confirmPassword && password !== ''
+        };
 
-    // Show/Hide fields and illustrations based on user type
-    userTypeInputs.forEach(input => {
-        input.addEventListener('change', function() {
-            // Hide all illustrations
-            Object.values(illustrations).forEach(illustration => {
-                illustration.classList.add('hidden');
+        // Show/Hide fields and illustrations based on user type
+        userTypeInputs.forEach(input => {
+            input.addEventListener('change', function () {
+                // Hide all illustrations
+                Object.values(illustrations).forEach(illustration => {
+                    illustration.classList.add('hidden');
+                });
+
+                // Show the selected illustration
+                illustrations[this.value].classList.remove('hidden');
+
+                // Show/Hide fields
+                doctorFields.classList.add('hidden');
+                adminFields.classList.add('hidden');
+
+                if (this.value === 'doctor') {
+                    doctorFields.classList.remove('hidden');
+                } else if (this.value === 'admin') {
+                    adminFields.classList.remove('hidden');
+                }
+
+                // Clear user type error when a selection is made - ADDED THIS LINE
+                userTypeError.classList.add('hidden');
             });
-
-            // Show the selected illustration
-            illustrations[this.value].classList.remove('hidden');
-
-            // Show/Hide fields
-            doctorFields.classList.add('hidden');
-            adminFields.classList.add('hidden');
-
-            if (this.value === 'doctor') {
-                doctorFields.classList.remove('hidden');
-            } else if (this.value === 'admin') {
-                adminFields.classList.remove('hidden');
-            }
-            
-            // Clear user type error when a selection is made - ADDED THIS LINE
-            userTypeError.classList.add('hidden');
         });
-    });
 
-    function updateValidationUI(requirement, isValid) {
-        const validationItem = document.querySelector(`[data-requirement="${requirement}"]`);
-        const icon = validationItem.querySelector('.validation-icon');
-        
-        // Remove all possible classes first
-        icon.classList.remove('fa-times', 'fa-check', 'valid-icon', 'invalid-icon');
-        
-        // Add appropriate classes based on validation
-        if (isValid) {
-            icon.classList.add('fa-check', 'valid-icon');
-        } else {
-            icon.classList.add('fa-times', 'invalid-icon');
-        }
-    }
+        function updateValidationUI(requirement, isValid) {
+            const validationItem = document.querySelector(`[data-requirement="${requirement}"]`);
+            const icon = validationItem.querySelector('.validation-icon');
 
-    function validatePassword() {
-        const password = password1.value;
-        const confirmPassword = password2.value;
-        let validCount = 0;
-        
-        // Check each requirement
-        for (const [requirement, checkFn] of Object.entries(requirements)) {
-            const isValid = requirement === 'match' 
-                ? checkFn(password, confirmPassword)
-                : checkFn(password);
-                
-            updateValidationUI(requirement, isValid);
-            if (isValid) validCount++;
+            // Remove all possible classes first
+            icon.classList.remove('fa-times', 'fa-check', 'valid-icon', 'invalid-icon');
+
+            // Add appropriate classes based on validation
+            if (isValid) {
+                icon.classList.add('fa-check', 'valid-icon');
+            } else {
+                icon.classList.add('fa-times', 'invalid-icon');
+            }
         }
 
-        // Update password strength meter
-        const strengthPercentage = (validCount / Object.keys(requirements).length) * 100;
-        passwordStrength.style.width = `${strengthPercentage}%`;
-        
-        // Update strength meter color
-        if (strengthPercentage <= 33) {
-            passwordStrength.className = 'password-strength bg-red-500 rounded-full';
-        } else if (strengthPercentage <= 66) {
-            passwordStrength.className = 'password-strength bg-yellow-500 rounded-full';
-        } else {
-            passwordStrength.className = 'password-strength bg-green-500 rounded-full';
+        function validatePassword() {
+            const password = password1.value;
+            const confirmPassword = password2.value;
+            let validCount = 0;
+
+            // Check each requirement
+            for (const [requirement, checkFn] of Object.entries(requirements)) {
+                const isValid = requirement === 'match'
+                    ? checkFn(password, confirmPassword)
+                    : checkFn(password);
+
+                updateValidationUI(requirement, isValid);
+                if (isValid) validCount++;
+            }
+
+            // Update password strength meter
+            const strengthPercentage = (validCount / Object.keys(requirements).length) * 100;
+            passwordStrength.style.width = `${strengthPercentage}%`;
+
+            // Update strength meter color
+            if (strengthPercentage <= 33) {
+                passwordStrength.className = 'password-strength bg-red-500 rounded-full';
+            } else if (strengthPercentage <= 66) {
+                passwordStrength.className = 'password-strength bg-yellow-500 rounded-full';
+            } else {
+                passwordStrength.className = 'password-strength bg-green-500 rounded-full';
+            }
+
+            return validCount === Object.keys(requirements).length;
         }
 
-        return validCount === Object.keys(requirements).length;
-    }
+        // Real-time validation
+        password1.addEventListener('input', validatePassword);
+        password2.addEventListener('input', validatePassword);
 
-    // Real-time validation
-    password1.addEventListener('input', validatePassword);
-    password2.addEventListener('input', validatePassword);
+        // Form submission validation - MODIFIED THIS SECTION
+        form.addEventListener('submit', function (e) {
+            // Check if a user type is selected - ADDED THIS VALIDATION
+            const userTypeSelected = Array.from(userTypeInputs).some(input => input.checked);
 
-    // Form submission validation - MODIFIED THIS SECTION
-    form.addEventListener('submit', function(e) {
-        // Check if a user type is selected - ADDED THIS VALIDATION
-        const userTypeSelected = Array.from(userTypeInputs).some(input => input.checked);
-        
-        if (!userTypeSelected) {
-            e.preventDefault();
-            userTypeError.textContent = "Please select an account type (Patient, Doctor, or Admin)";
-            userTypeError.classList.remove('hidden');
-            return;
-        }
-        
-        if (!validatePassword()) {
-            e.preventDefault();
-            // Show error message in a more user-friendly way
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4';
-            errorDiv.role = 'alert';
-            errorDiv.innerHTML = `
+            if (!userTypeSelected) {
+                e.preventDefault();
+                userTypeError.textContent = "Please select an account type (Patient, Doctor, or Admin)";
+                userTypeError.classList.remove('hidden');
+                return;
+            }
+
+            if (!validatePassword()) {
+                e.preventDefault();
+                // Show error message in a more user-friendly way
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-4';
+                errorDiv.role = 'alert';
+                errorDiv.innerHTML = `
                 <strong class="font-bold">Error!</strong>
                 <span class="block sm:inline"> Please ensure all password requirements are met before submitting.</span>
             `;
-            
-            // Remove any existing error messages
-            const existingError = form.querySelector('[role="alert"]');
-            if (existingError) {
-                existingError.remove();
-            }
-            
-            // Add new error message
-            form.insertBefore(errorDiv, form.firstChild);
-            
-            // Scroll to error message
-            errorDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-    });
 
-    // Initialize password validation on page load
-    validatePassword();
-});
+                // Remove any existing error messages
+                const existingError = form.querySelector('[role="alert"]');
+                if (existingError) {
+                    existingError.remove();
+                }
+
+                // Add new error message
+                form.insertBefore(errorDiv, form.firstChild);
+
+                // Scroll to error message
+                errorDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                // Valid form - show loading state
+                const submitBtn = form.querySelector('button[type="submit"]');
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = `
+                <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Creating Account...
+            `;
+                submitBtn.classList.add('opacity-75', 'cursor-not-allowed');
+            }
+        });
+
+        // Initialize password validation on page load
+        validatePassword();
+    });
 </script>
 {% endblock %}
