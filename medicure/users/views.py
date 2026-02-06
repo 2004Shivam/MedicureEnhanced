@@ -85,28 +85,55 @@ def debug_email_view(request):
             output.append("<b>Error: Credentials missing in os.environ</b>")
             return HttpResponse("<br>".join(output))
 
-        output.append("Connecting to smtp.gmail.com:587...")
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        # server.set_debuglevel(1) 
+        import socket
+        socket.setdefaulttimeout(10) # Set global socket timeout to 10 seconds
         
-        output.append("Starting TLS...")
-        server.starttls()
-        
-        output.append("Logging in...")
-        server.login(email_user, email_password)
-        output.append("Login successful!")
-        
-        msg = MIMEText("This is a test email from the Render debug view.")
-        msg['Subject'] = "Render SMTP Test"
-        msg['From'] = email_user
-        msg['To'] = email_user
-        
-        output.append(f"Sending to {email_user}...")
-        server.sendmail(email_user, [email_user], msg.as_string())
-        output.append("Email sent successfully!")
-        
-        server.quit()
-        return HttpResponse("<br>".join(output))
+        output.append("<b>Test 1: Connecting to smtp.gmail.com:587 (TLS)...</b>")
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587, timeout=10)
+            output.append("Connected to 587!")
+            output.append("Starting TLS...")
+            server.starttls()
+            output.append("TLS Started!")
+            output.append("Logging in...")
+            server.login(email_user, email_password)
+            output.append("Login successful!")
+            
+            msg = MIMEText("This is a test email from the Render debug view (Port 587).")
+            msg['Subject'] = "Render SMTP Test (587)"
+            msg['From'] = email_user
+            msg['To'] = email_user
+            
+            server.sendmail(email_user, [email_user], msg.as_string())
+            output.append("<b>Email sent successfully via Port 587!</b>")
+            server.quit()
+            return HttpResponse("<br>".join(output))
+            
+        except Exception as e:
+            output.append(f"<span style='color:red'>Failed Port 587: {str(e)}</span>")
+            
+        output.append("<br><b>Test 2: Connecting to smtp.gmail.com:465 (SSL)...</b>")
+        try:
+            server = smtplib.SMTP_SSL('smtp.gmail.com', 465, timeout=10)
+            output.append("Connected to 465!")
+            output.append("Logging in...")
+            server.login(email_user, email_password)
+            output.append("Login successful!")
+            
+            msg = MIMEText("This is a test email from the Render debug view (Port 465).")
+            msg['Subject'] = "Render SMTP Test (465)"
+            msg['From'] = email_user
+            msg['To'] = email_user
+            
+            server.sendmail(email_user, [email_user], msg.as_string())
+            output.append("<b>Email sent successfully via Port 465!</b>")
+            server.quit()
+            return HttpResponse("<br>".join(output))
+            
+        except Exception as e:
+            output.append(f"<span style='color:red'>Failed Port 465: {str(e)}</span>")
+            
+        return HttpResponse("<br>".join(output) + "<br><b>Both methods failed.</b>")
         
     except Exception as e:
         import traceback
