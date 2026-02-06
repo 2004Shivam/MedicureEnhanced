@@ -150,6 +150,9 @@ if os.getenv('POSTGRES_DB'):
             'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
             'HOST': os.getenv('POSTGRES_HOST'),
             'PORT': os.getenv('POSTGRES_PORT'),
+            'OPTIONS': {
+                'sslmode': 'require',
+            },
         }
     }
 else:
