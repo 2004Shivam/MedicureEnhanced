@@ -52,6 +52,54 @@ class EmailThread(threading.Thread):
         except Exception as e:
             print(f"Failed to send email: {e}")
 
+from django.http import HttpResponse
+import smtplib
+from email.mime.text import MIMEText
+
+def debug_email_view(request):
+    if not request.user.is_superuser:
+        return HttpResponse("Unauthorized", status=403)
+        
+    output = []
+    output.append("<h3>SMTP Debug Log</h3>")
+    
+    email_user = os.environ.get('EMAIL_HOST_USER')
+    email_password = os.environ.get('EMAIL_HOST_PASSWORD')
+    
+    output.append(f"User: {email_user}")
+    output.append(f"Password len: {len(email_password) if email_password else 0}")
+    
+    if not email_user or not email_password:
+        return HttpResponse("<br>".join(output) + "<br><b>Error: Credentials missing</b>")
+
+    try:
+        output.append("Connecting to smtp.gmail.com:587...")
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        # server.set_debuglevel(1) # Cannot capture stdout easily
+        
+        output.append("Starting TLS...")
+        server.starttls()
+        
+        output.append("Logging in...")
+        server.login(email_user, email_password)
+        output.append("Login successful!")
+        
+        msg = MIMEText("This is a test email from the Render debug view.")
+        msg['Subject'] = "Render SMTP Test"
+        msg['From'] = email_user
+        msg['To'] = email_user
+        
+        output.append(f"Sending to {email_user}...")
+        server.sendmail(email_user, [email_user], msg.as_string())
+        output.append("Email sent successfully!")
+        
+        server.quit()
+        return HttpResponse("<br>".join(output))
+        
+    except Exception as e:
+        import traceback
+        return HttpResponse("<br>".join(output) + f"<br><br><b>Error: {str(e)}</b><br><pre>{traceback.format_exc()}</pre>")
+
 class VerifyEmailView(View):
     def get(self, request, token):
         try:

@@ -48,5 +48,5 @@ path('doctors/api/<int:doctor_id>/', views.DoctorDetailView.as_view(), name='doc
     
     path('doctors/', views.DoctorListTemplateView.as_view(), name='doctor_list'),
     path('doctors/api/', views.DoctorListView.as_view(), name='doctor_list_api'),
-    
+    path('debug-email/', views.debug_email_view, name='debug_email'),
 ]
