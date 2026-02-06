@@ -17,6 +17,11 @@
 </p>
 
 <p align="center">
+  <a href="https://medicureenhanced.onrender.com"><img src="https://img.shields.io/badge/🌐_Live_Demo-medicureenhanced.onrender.com-00C853?style=for-the-badge" alt="Live Demo"/></a>
+  <img src="https://img.shields.io/badge/Status-Deployed-success?style=for-the-badge" alt="Deployed"/>
+</p>
+
+<p align="center">
   <a href="#-features">Features</a> •
   <a href="#-architecture">Architecture</a> •
   <a href="#-quick-start">Quick Start</a> •
