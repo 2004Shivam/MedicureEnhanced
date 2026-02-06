@@ -1,10 +1,13 @@
-<nav class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-blue-600 to-indigo-700 shadow-2xl transition-all duration-300" id="mainNavbar">
+<nav class="fixed top-0 left-0 w-full z-50 bg-gradient-to-r from-blue-600 to-indigo-700 shadow-2xl transition-all duration-300"
+    id="mainNavbar">
     <div class="container mx-auto px-4 py-3 flex items-center justify-between">
         <!-- Logo/Brand -->
         <div class="flex items-center">
             <a href="{% url 'home' %}" class="flex items-center">
                 <svg class="w-10 h-10 mr-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z" clip-rule="evenodd"/>
+                    <path fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 1.414L10.586 9H7a1 1 0 100 2h3.586l-1.293 1.293a1 1 0 101.414 1.414l3-3a1 1 0 000-1.414z"
+                        clip-rule="evenodd" />
                 </svg>
                 <span class="text-2xl font-bold text-white tracking-tight">MediCure</span>
             </a>
@@ -15,91 +18,99 @@
             <!-- Main Navigation Links -->
             <div class="flex space-x-6">
                 {% if user.is_authenticated %}
-                    {% if user.is_superuser %}
-                        <a href="{% url 'admin_dashboard' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-tachometer-alt mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Admin Dashboard
-                        </a>
-                        <a href="{% url 'admin_doctor_approvals' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-user-md mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Doctor Approvals
-                        </a>
-                        <a href="{% url 'admin_user_list' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-users mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            User List
-                        </a>
-                        <a href="{% url 'subscription_admin_list' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-scroll mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Subscriptions
-                        </a>
-                    {% elif user.is_doctor %}
-                        <a href="{% url 'doctor-appointments' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-user-md mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                             Appointments
-                        </a>
-                    {% else %}
-                    <a href="{% url 'health_home' %}" class="text-white hover:text-blue-200 transition">
-                        <i class="fas fa-heartbeat mr-2 text-blue-300"></i> Health Risk Assessment
-                    </a>
-                    
-                        <a href="{% url 'disease_prediction:predict' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-diagnoses mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Disease Prediction
-                        </a>
-                        <a href="{% url 'book-appointment' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-calendar-check mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Book Appointment
-                        </a>
-                        <a href="{% url 'diet_exercise:generate-plans' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                            <i class="fas fa-dumbbell mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                            Health Planner
-                        </a>
-                    {% endif %}
+                {% if user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-tachometer-alt mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Admin Dashboard
+                </a>
+                <a href="{% url 'admin_doctor_approvals' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-user-md mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Doctor Approvals
+                </a>
+                <a href="{% url 'admin_user_list' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-users mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    User List
+                </a>
+                <a href="{% url 'subscription_admin_list' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-scroll mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Subscriptions
+                </a>
+                {% elif user.is_doctor %}
+                <a href="{% url 'doctor-appointments' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-user-md mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Appointments
+                </a>
                 {% else %}
-                    <a href="{% url 'signup' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                        <i class="fas fa-user-plus mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                        Sign Up
-                    </a>
-                    <a href="{% url 'login' %}" class="text-white hover:text-blue-200 transition flex items-center group">
-                        <i class="fas fa-sign-in-alt mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
-                        Login
-                    </a>
+                <a href="{% url 'health_home' %}" class="text-white hover:text-blue-200 transition">
+                    <i class="fas fa-heartbeat mr-2 text-blue-300"></i> Health Risk Assessment
+                </a>
+
+                <a href="{% url 'disease_prediction:predict' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-diagnoses mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Disease Prediction
+                </a>
+                <a href="{% url 'book-appointment' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-calendar-check mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Book Appointment
+                </a>
+                <a href="{% url 'diet_exercise:generate-plans' %}"
+                    class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-dumbbell mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Health Planner
+                </a>
+                {% endif %}
+                {% else %}
+                <a href="{% url 'signup' %}" class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-user-plus mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Sign Up
+                </a>
+                <a href="{% url 'login' %}" class="text-white hover:text-blue-200 transition flex items-center group">
+                    <i class="fas fa-sign-in-alt mr-2 text-blue-300 group-hover:text-blue-200 transition"></i>
+                    Login
+                </a>
                 {% endif %}
             </div>
 
             <!-- Authentication Links -->
             <div class="flex items-center space-x-4">
                 {% if user.is_authenticated %}
-                    <!-- User Profile Dropdown -->
-                    <div class="relative group">
-                        <button class="flex items-center text-white hover:text-blue-200 transition">
-                            <img src="{{ user.profile_picture.url|default:'/static/images/protection.png' }}" 
-                                 alt="Profile" 
-                                 class="w-10 h-10 rounded-full mr-2 border-2 border-white group-hover:border-blue-200 transition"
-                            >
-                            {{ user.first_name|default:user.username }}
-                            <i class="fas fa-chevron-down ml-2 text-sm"></i>
-                        </button>
-                        
-                        <!-- Dropdown Menu -->
-                        <div class="absolute hidden group-hover:block right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2 z-50">
+                <!-- User Profile Dropdown -->
+                <div class="relative group">
+                    <button class="flex items-center text-white hover:text-blue-200 transition">
+                        <img src="{{ user.profile_picture.url|default:'/static/images/protection.png' }}" alt="Profile"
+                            class="w-10 h-10 rounded-full mr-2 border-2 border-white group-hover:border-blue-200 transition">
+                        {{ user.first_name|default:user.username }}
+                        <i class="fas fa-chevron-down ml-2 text-sm"></i>
+                    </button>
+
+                    <!-- Dropdown Menu -->
+                    <div class="absolute hidden group-hover:block right-0 top-full pt-2 z-50">
+                        <div class="w-48 bg-white rounded-lg shadow-lg py-2">
                             {% if user.is_superuser %}
-                                <a href="{% url 'admin_profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                    <i class="fas fa-user-shield mr-2 text-blue-500"></i>Admin Profile
-                                </a>
+                            <a href="{% url 'admin_profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                <i class="fas fa-user-shield mr-2 text-blue-500"></i>Admin Profile
+                            </a>
                             {% else %}
-                                <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                    <i class="fas fa-tachometer-alt mr-2 text-blue-500"></i>Dashboard
-                                </a>
-                                <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
-                                    <i class="fas fa-user mr-2 text-blue-500"></i>Profile
-                                </a>
+                            <a href="{% url 'dashboard' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                <i class="fas fa-tachometer-alt mr-2 text-blue-500"></i>Dashboard
+                            </a>
+                            <a href="{% url 'profile' %}" class="block px-4 py-2 text-gray-800 hover:bg-blue-50">
+                                <i class="fas fa-user mr-2 text-blue-500"></i>Profile
+                            </a>
                             {% endif %}
                             <a href="{% url 'logout' %}" class="block px-4 py-2 text-red-600 hover:bg-red-50">
                                 <i class="fas fa-sign-out-alt mr-2"></i>Logout
                             </a>
                         </div>
                     </div>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -124,64 +135,66 @@
 
             <nav class="space-y-6">
                 {% if user.is_authenticated %}
-                    {% if user.is_superuser %}
-                        <a href="{% url 'admin_dashboard' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-tachometer-alt mr-4"></i>Admin Dashboard
-                        </a>
-                        <a href="{% url 'admin_doctor_approvals' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-user-md mr-4"></i>Doctor Approvals
-                        </a>
-                        <a href="{% url 'admin_user_list' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-users mr-4"></i>User List
-                        </a>
-                        <a href="{% url 'subscription_admin_list' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-scroll mr-4"></i>Subscriptions
-                        </a>
-                    {% elif user.is_doctor %}
-                        <a href="{% url 'doctor-appointments' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-user-md mr-4"></i>Doctor Dashboard
-                        </a>
-                    {% else %}
-                    <a href="{% url 'health_home' %}" class="text-white hover:text-blue-200 transition">
-                        <i class="fas fa-heartbeat mr-2 text-blue-300"></i> Health Risk Assessment
-                    </a>
-                    
-                        <a href="{% url 'disease_prediction:predict' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-diagnoses mr-4"></i>Disease Prediction
-                        </a>
-                        <a href="{% url 'book-appointment' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-calendar-check mr-4"></i>Book Appointment
-                        </a>
-                        <a href="{% url 'diet_exercise:generate-plans' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-dumbbell mr-4"></i>Health Planner
-                        </a>
-                    {% endif %}
-                    <div class="border-t border-blue-500 pt-6 mt-6">
-                        {% if user.is_superuser %}
-                            <a href="{% url 'admin_profile' %}" class="block text-white text-2xl hover:text-blue-200">
-                                <i class="fas fa-user-shield mr-4"></i>Admin Profile
-                            </a>
-                        {% else %}
-                            <a href="{% url 'dashboard' %}" class="block text-white text-2xl hover:text-blue-200">
-                                <i class="fas fa-tachometer-alt mr-4"></i>Dashboard
-                            </a>
-                            <a href="{% url 'profile' %}" class="block text-white text-2xl hover:text-blue-200">
-                                <i class="fas fa-user mr-4"></i>Profile
-                            </a>
-                        {% endif %}
-                        <a href="{% url 'logout' %}" class="block text-red-300 text-2xl hover:text-red-200">
-                            <i class="fas fa-sign-out-alt mr-4"></i>Logout
-                        </a>
-                    </div>
+                {% if user.is_superuser %}
+                <a href="{% url 'admin_dashboard' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-tachometer-alt mr-4"></i>Admin Dashboard
+                </a>
+                <a href="{% url 'admin_doctor_approvals' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-user-md mr-4"></i>Doctor Approvals
+                </a>
+                <a href="{% url 'admin_user_list' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-users mr-4"></i>User List
+                </a>
+                <a href="{% url 'subscription_admin_list' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-scroll mr-4"></i>Subscriptions
+                </a>
+                {% elif user.is_doctor %}
+                <a href="{% url 'doctor-appointments' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-user-md mr-4"></i>Doctor Dashboard
+                </a>
                 {% else %}
-                    <div class="border-t border-blue-500 pt-6 mt-6 space-y-4">
-                        <a href="{% url 'login' %}" class="block text-white text-2xl hover:text-blue-200">
-                            <i class="fas fa-sign-in-alt mr-4"></i>Login
-                        </a>
-                        <a href="{% url 'signup' %}" class="block bg-green-500 text-white text-2xl rounded-full hover:bg-green-600">
-                            <i class="fas fa-user-plus mr-4"></i>Sign Up
-                        </a>
-                    </div>
+                <a href="{% url 'health_home' %}" class="text-white hover:text-blue-200 transition">
+                    <i class="fas fa-heartbeat mr-2 text-blue-300"></i> Health Risk Assessment
+                </a>
+
+                <a href="{% url 'disease_prediction:predict' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-diagnoses mr-4"></i>Disease Prediction
+                </a>
+                <a href="{% url 'book-appointment' %}" class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-calendar-check mr-4"></i>Book Appointment
+                </a>
+                <a href="{% url 'diet_exercise:generate-plans' %}"
+                    class="block text-white text-2xl hover:text-blue-200">
+                    <i class="fas fa-dumbbell mr-4"></i>Health Planner
+                </a>
+                {% endif %}
+                <div class="border-t border-blue-500 pt-6 mt-6">
+                    {% if user.is_superuser %}
+                    <a href="{% url 'admin_profile' %}" class="block text-white text-2xl hover:text-blue-200">
+                        <i class="fas fa-user-shield mr-4"></i>Admin Profile
+                    </a>
+                    {% else %}
+                    <a href="{% url 'dashboard' %}" class="block text-white text-2xl hover:text-blue-200">
+                        <i class="fas fa-tachometer-alt mr-4"></i>Dashboard
+                    </a>
+                    <a href="{% url 'profile' %}" class="block text-white text-2xl hover:text-blue-200">
+                        <i class="fas fa-user mr-4"></i>Profile
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'logout' %}" class="block text-red-300 text-2xl hover:text-red-200">
+                        <i class="fas fa-sign-out-alt mr-4"></i>Logout
+                    </a>
+                </div>
+                {% else %}
+                <div class="border-t border-blue-500 pt-6 mt-6 space-y-4">
+                    <a href="{% url 'login' %}" class="block text-white text-2xl hover:text-blue-200">
+                        <i class="fas fa-sign-in-alt mr-4"></i>Login
+                    </a>
+                    <a href="{% url 'signup' %}"
+                        class="block bg-green-500 text-white text-2xl rounded-full hover:bg-green-600">
+                        <i class="fas fa-user-plus mr-4"></i>Sign Up
+                    </a>
+                </div>
                 {% endif %}
             </nav>
         </div>
@@ -190,53 +203,53 @@
 
 <script>
     // Mobile menu functionality (your existing code)
-    document.getElementById('mobile-menu-toggle').addEventListener('click', function() {
+    document.getElementById('mobile-menu-toggle').addEventListener('click', function () {
         document.getElementById('mobile-menu').classList.toggle('hidden');
     });
 
-    document.getElementById('mobile-menu-close').addEventListener('click', function() {
+    document.getElementById('mobile-menu-close').addEventListener('click', function () {
         document.getElementById('mobile-menu').classList.add('hidden');
     });
 
     // Dynamic navbar visibility code
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const navbar = document.getElementById('mainNavbar');
         let lastScrollTop = 0;
         let isHovering = false;
         const scrollThreshold = 100; // How many pixels to scroll before hiding navbar
-        
+
         // Add padding to the body equal to navbar height to prevent content jump
         const navbarHeight = navbar.offsetHeight;
         document.body.style.paddingTop = navbarHeight + 'px';
-        
+
         // Function to control navbar visibility
         function updateNavbarVisibility() {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
+
             // Show navbar if at top, hovering, or scrolling up
             if (scrollTop <= scrollThreshold || isHovering || scrollTop < lastScrollTop) {
                 navbar.style.transform = 'translateY(0)';
                 navbar.style.opacity = '1';
-            } 
+            }
             // Hide navbar when scrolling down past threshold
             else if (scrollTop > lastScrollTop && scrollTop > scrollThreshold) {
                 navbar.style.transform = 'translateY(-100%)';
                 navbar.style.opacity = '0';
             }
-            
+
             lastScrollTop = scrollTop;
         }
-        
+
         // Event listeners
         window.addEventListener('scroll', updateNavbarVisibility);
-        
+
         // Show navbar on hover at top of page
-        navbar.addEventListener('mouseenter', function() {
+        navbar.addEventListener('mouseenter', function () {
             isHovering = true;
             updateNavbarVisibility();
         });
-        
-        navbar.addEventListener('mouseleave', function() {
+
+        navbar.addEventListener('mouseleave', function () {
             isHovering = false;
             updateNavbarVisibility();
         });
@@ -251,12 +264,12 @@
         topHoverArea.style.zIndex = '49';
         document.body.appendChild(topHoverArea);
 
-        topHoverArea.addEventListener('mouseenter', function() {
+        topHoverArea.addEventListener('mouseenter', function () {
             isHovering = true;
             updateNavbarVisibility();
         });
 
-        topHoverArea.addEventListener('mouseleave', function() {
+        topHoverArea.addEventListener('mouseleave', function () {
             isHovering = false;
             updateNavbarVisibility();
         });
