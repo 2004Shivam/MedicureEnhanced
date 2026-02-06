@@ -19,8 +19,6 @@
 <p align="center">
   <a href="#-features">Features</a> •
   <a href="#-architecture">Architecture</a> •
-  <a href="#-project-structure">Structure</a> •
-  <a href="#-api-reference">API</a> •
   <a href="#-quick-start">Quick Start</a> •
   <a href="#-deployment">Deployment</a>
 </p>
@@ -127,101 +125,7 @@ sequenceDiagram
 
 ---
 
-## 📁 Project Structure
 
-```
-MedicureEnhanced/
-├── medicure/                    # Main Django Project
-│   ├── medicure/                # Project Settings
-│   │   ├── settings.py          # Configuration (DB, Email, ML)
-│   │   ├── urls.py              # Root URL Router
-│   │   └── wsgi.py              # WSGI Entry Point
-│   │
-│   ├── users/                   # 👤 User & Auth Module
-│   │   ├── models.py            # CustomUser Model
-│   │   ├── views.py             # Login, Signup, Dashboard
-│   │   └── serializers.py       # JWT Serializers
-│   │
-│   ├── doctors/                 # 👨‍⚕️ Doctor Module
-│   │   ├── models.py            # DoctorProfile
-│   │   └── views.py             # Doctor List & API
-│   │
-│   ├── appointments/            # 📅 Appointment Module
-│   │   ├── models.py            # Appointment Model
-│   │   └── views.py             # Booking, Approval
-│   │
-│   ├── disease_prediction/      # 🧠 ML Disease Prediction
-│   │   ├── disease_model_xgb.pkl
-│   │   ├── train_xgboost.py
-│   │   └── views.py             # Prediction API
-│   │
-│   ├── health_prediction/       # 🩺 Health Risk Models
-│   │   ├── models/
-│   │   │   ├── mental_health_model.pkl
-│   │   │   ├── obesity_model.pkl
-│   │   │   └── pcos_model.pkl
-│   │   └── views.py
-│   │
-│   ├── diet_exercise/           # 🥗 Diet & Exercise Planner
-│   │   ├── diet_model.pkl
-│   │   └── views.py
-│   │
-│   ├── subscriptions/           # 💳 Payment Module
-│   │   └── views.py             # Razorpay Integration
-│   │
-│   ├── templates/               # 🎨 Frontend Templates
-│   ├── static/                  # 📦 CSS, JS, Images
-│   ├── Dockerfile               # 🐳 Container Definition
-│   └── docker-compose.yml       # 🐳 Multi-Container Setup
-│
-├── README.md
-└── .gitignore
-```
-
----
-
-## 🔌 API Reference
-
-### Authentication
-
-| Method | Endpoint | Description | Auth |
-|:------:|:---------|:------------|:----:|
-| `POST` | `/users/api/login/` | JWT Login | ❌ |
-| `POST` | `/users/signup/` | User Registration | ❌ |
-| `GET` | `/users/verify-email/<token>/` | Email Verification | ❌ |
-| `POST` | `/users/forgot-password/` | Password Reset | ❌ |
-
-### Disease Prediction (ML)
-
-| Method | Endpoint | Description | Auth |
-|:------:|:---------|:------------|:----:|
-| `GET` | `/disease/predict/` | Prediction Form | ✅ |
-| `POST` | `/disease/predict/` | Run XGBoost Model | ✅ |
-
-### Health Risk Assessment
-
-| Method | Endpoint | Description | Auth |
-|:------:|:---------|:------------|:----:|
-| `POST` | `/health/mental-health/` | Mental Health Risk | ✅ |
-| `POST` | `/health/obesity/` | Obesity Risk Score | ✅ |
-| `POST` | `/health/pcos/` | PCOS Prediction | ✅ |
-
-### Appointments
-
-| Method | Endpoint | Description | Auth |
-|:------:|:---------|:------------|:----:|
-| `GET` | `/appointments/book/<doctor_id>/` | Booking Page | ✅ |
-| `POST` | `/appointments/book/<doctor_id>/` | Create Appointment | ✅ |
-| `POST` | `/appointments/approve/<id>/` | Doctor Approves | 👨‍⚕️ |
-
-### Diet & Exercise
-
-| Method | Endpoint | Description | Auth |
-|:------:|:---------|:------------|:----:|
-| `GET` | `/exercise/planner/` | Planner Form | ✅ |
-| `POST` | `/exercise/generate-plan/` | Generate AI Plan | ✅ |
-
----
 
 ## 🚀 Quick Start
 
