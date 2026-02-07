@@ -59,11 +59,10 @@ class ExerciseService:
         for category in categories:
             url = f"https://exercisedb.p.rapidapi.com/exercises/bodyPart/{category}"
             response = requests.get(url, headers=self.headers)
-            # Log API responses
-            logger.debug(f"API Response: {response.json()}")
             
             if response.status_code == 200:
                 exercises = response.json()
+                logger.debug(f"Got {len(exercises)} exercises for category: {category}")
                 # Randomly select 2-3 exercises per category
                 selected_exercises = random.sample(exercises, min(3, len(exercises)))
                 

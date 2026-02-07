@@ -8,6 +8,10 @@ def get_item(dictionary, key):
     Gets an item from a dictionary safely.
     Usage: {{ mydict|get_item:key }}
     """
+    if dictionary is None:
+        return None
+    if not isinstance(dictionary, dict):
+        return None
     return dictionary.get(key, None)
 
 @register.filter
