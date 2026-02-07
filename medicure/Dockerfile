@@ -29,4 +29,4 @@ RUN python manage.py collectstatic --noinput
 EXPOSE 8000
 
 # Default command (Production ready)
-CMD ["sh", "-c", "python manage.py migrate && gunicorn medicure.wsgi:application --bind 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py populate_doctors && gunicorn medicure.wsgi:application --bind 0.0.0.0:8000"]
