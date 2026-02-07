@@ -86,18 +86,15 @@
                                 </div>
                                 <div class="bg-green-50 rounded-xl p-4 text-center">
                                     <p class="text-sm text-green-600 font-medium">Macros Split</p>
-                                    <p class="text-lg font-semibold text-green-900">{{
-                                        diet_plan.macro_split|default:"40/30/30" }}</p>
+                                    <p class="text-lg font-semibold text-green-900">{{ diet_plan.macro_split|default:"40/30/30" }}</p>
                                 </div>
                                 <div class="bg-purple-50 rounded-xl p-4 text-center">
                                     <p class="text-sm text-purple-600 font-medium">Meals/Day</p>
-                                    <p class="text-lg font-semibold text-purple-900">{{ diet_plan.meal_count|default:4
-                                        }}</p>
+                                    <p class="text-lg font-semibold text-purple-900">{{ diet_plan.meal_count|default:4 }}</p>
                                 </div>
                                 <div class="bg-orange-50 rounded-xl p-4 text-center">
                                     <p class="text-sm text-orange-600 font-medium">Water Goal</p>
-                                    <p class="text-lg font-semibold text-orange-900">{{
-                                        diet_plan.water_goal|default:"2.5" }}L</p>
+                                    <p class="text-lg font-semibold text-orange-900">{{ diet_plan.water_goal|default:"2.5" }}L</p>
                                 </div>
                             </div>
 
@@ -134,20 +131,17 @@
                                         <div class="bg-white rounded-lg p-3 text-center shadow-sm">
                                             <span class="block text-lg mb-1">🥩</span>
                                             <span class="text-sm text-gray-600">Protein</span>
-                                            <span class="block font-medium text-gray-800">{{ meal.nutrition.protein
-                                                }}g</span>
+                                            <span class="block font-medium text-gray-800">{{ meal.nutrition.protein }}g</span>
                                         </div>
                                         <div class="bg-white rounded-lg p-3 text-center shadow-sm">
                                             <span class="block text-lg mb-1">🌾</span>
                                             <span class="text-sm text-gray-600">Carbs</span>
-                                            <span class="block font-medium text-gray-800">{{
-                                                meal.nutrition.carbohydrates }}g</span>
+                                            <span class="block font-medium text-gray-800">{{ meal.nutrition.carbohydrates }}g</span>
                                         </div>
                                         <div class="bg-white rounded-lg p-3 text-center shadow-sm">
                                             <span class="block text-lg mb-1">🥑</span>
                                             <span class="text-sm text-gray-600">Fat</span>
-                                            <span class="block font-medium text-gray-800">{{ meal.nutrition.fat
-                                                }}g</span>
+                                            <span class="block font-medium text-gray-800">{{ meal.nutrition.fat }}g</span>
                                         </div>
                                     </div>
                                     {% endif %}
@@ -234,13 +228,11 @@
                                 </div>
                                 <div class="bg-blue-50 rounded-xl p-4 text-center">
                                     <p class="text-sm text-blue-600 font-medium">Intensity</p>
-                                    <p class="text-lg font-semibold text-blue-900">{{
-                                        exercise_plan.intensity|default:"Moderate" }}</p>
+                                    <p class="text-lg font-semibold text-blue-900">{{ exercise_plan.intensity|default:"Moderate" }}</p>
                                 </div>
                                 <div class="bg-purple-50 rounded-xl p-4 text-center">
                                     <p class="text-sm text-purple-600 font-medium">Est. Calories</p>
-                                    <p class="text-lg font-semibold text-purple-900">~{{
-                                        exercise_plan.calories_burn|default:"300-400" }}</p>
+                                    <p class="text-lg font-semibold text-purple-900">~{{ exercise_plan.calories_burn|default:"300-400" }}</p>
                                 </div>
                             </div>
 
@@ -299,18 +291,13 @@
                                 {% else %}
                                 <div class="bg-gray-50 rounded-xl p-4">
                                     <ul class="space-y-2">
-                                        {% for activity in
-                                        exercise_plan.exercises|get_item:section|get_item:"activities" %}
+                                        {% for activity in exercise_plan.exercises|get_item:section|get_item:"activities" %}
                                         <li class="flex items-center text-gray-700">
                                             <span class="mr-2">•</span>
                                             <span class="flex-1">{{ activity }}</span>
-                                            {% if activity.duration %}
-                                            <span
-                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                {{ activity.duration }}min
-                                            </span>
-                                            {% endif %}
                                         </li>
+                                        {% empty %}
+                                        <li class="text-gray-500 italic">No activities found</li>
                                         {% endfor %}
                                     </ul>
                                 </div>
@@ -552,4 +539,5 @@
             // Add tooltip initialization if needed
         }
     </script>
-    {% endblock %}
+</div>
+{% endblock %}
