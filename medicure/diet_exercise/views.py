@@ -210,9 +210,13 @@ class PlanResultsView(LoginRequiredMixin, TemplateView):
     template_name = 'diet_exercise/plan_results.html'
 
     def get(self, request, *args, **kwargs):
+        import traceback
+        logger.info("PlanResultsView.get() called")
+        
         # Check for profile first
         try:
             self.profile = UserHealthProfile.objects.get(user=request.user)
+            logger.info(f"Found profile for user: {request.user}")
         except UserHealthProfile.DoesNotExist:
             messages.error(request, "Please complete your health profile first.")
             return redirect('diet_exercise:health-profile')
@@ -223,12 +227,18 @@ class PlanResultsView(LoginRequiredMixin, TemplateView):
         
         try:
             self.diet_plan = DietPlan.objects.filter(user=request.user).latest('date_created')
+            logger.info(f"Found diet plan: {self.diet_plan.id}")
         except DietPlan.DoesNotExist:
+            logger.info("No diet plan found")
             pass  # Diet plan is optional
             
         try:
             self.exercise_plan = ExercisePlan.objects.filter(user=request.user).latest('date_created')
+            logger.info(f"Found exercise plan: {self.exercise_plan.id}")
+            logger.info(f"Exercise plan exercises type: {type(self.exercise_plan.exercises)}")
+            logger.info(f"Exercise plan exercises keys: {self.exercise_plan.exercises.keys() if isinstance(self.exercise_plan.exercises, dict) else 'NOT A DICT'}")
         except ExercisePlan.DoesNotExist:
+            logger.info("No exercise plan found")
             pass  # Exercise plan is optional
         
         # Only redirect if BOTH are missing
@@ -236,29 +246,44 @@ class PlanResultsView(LoginRequiredMixin, TemplateView):
             messages.error(request, "No plans found. Please generate new plans.")
             return redirect('diet_exercise:health-profile')
         
-        return super().get(request, *args, **kwargs)
+        try:
+            return super().get(request, *args, **kwargs)
+        except Exception as e:
+            logger.error(f"Error in PlanResultsView.get(): {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
 
     def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        
-        context['profile'] = self.profile
-        context['diet_plan'] = self.diet_plan
-        context['exercise_plan'] = self.exercise_plan
-        
-        # Parse JSON meal data if diet plan exists
-        if self.diet_plan:
-            try:
-                self.diet_plan.meal_data = {
-                    'breakfast': json.loads(self.diet_plan.breakfast) if self.diet_plan.breakfast else [],
-                    'lunch': json.loads(self.diet_plan.lunch) if self.diet_plan.lunch else [],
-                    'dinner': json.loads(self.diet_plan.dinner) if self.diet_plan.dinner else [],
-                    'snacks': json.loads(self.diet_plan.snacks) if self.diet_plan.snacks else []
-                }
-            except json.JSONDecodeError:
-                self.diet_plan.meal_data = {}
-            context['diet_plan'] = self.diet_plan
+        import traceback
+        try:
+            logger.info("PlanResultsView.get_context_data() called")
+            context = super().get_context_data(**kwargs)
             
-        return context
+            context['profile'] = self.profile
+            context['diet_plan'] = self.diet_plan
+            context['exercise_plan'] = self.exercise_plan
+            
+            # Parse JSON meal data if diet plan exists
+            if self.diet_plan:
+                try:
+                    self.diet_plan.meal_data = {
+                        'breakfast': json.loads(self.diet_plan.breakfast) if self.diet_plan.breakfast else [],
+                        'lunch': json.loads(self.diet_plan.lunch) if self.diet_plan.lunch else [],
+                        'dinner': json.loads(self.diet_plan.dinner) if self.diet_plan.dinner else [],
+                        'snacks': json.loads(self.diet_plan.snacks) if self.diet_plan.snacks else []
+                    }
+                    logger.info(f"Parsed meal_data keys: {self.diet_plan.meal_data.keys()}")
+                except json.JSONDecodeError as e:
+                    logger.error(f"JSON decode error: {e}")
+                    self.diet_plan.meal_data = {}
+                context['diet_plan'] = self.diet_plan
+            
+            logger.info("get_context_data() completed successfully")
+            return context
+        except Exception as e:
+            logger.error(f"Error in get_context_data: {str(e)}")
+            logger.error(traceback.format_exc())
+            raise
 
 
 class DietPlanView(LoginRequiredMixin, DetailView):
