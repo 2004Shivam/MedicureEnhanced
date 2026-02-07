@@ -210,11 +210,29 @@ class PlanResultsView(LoginRequiredMixin, TemplateView):
     template_name = 'diet_exercise/plan_results.html'
 
     def get(self, request, *args, **kwargs):
+        # Check for profile first
         try:
             self.profile = UserHealthProfile.objects.get(user=request.user)
+        except UserHealthProfile.DoesNotExist:
+            messages.error(request, "Please complete your health profile first.")
+            return redirect('diet_exercise:health-profile')
+        
+        # Get plans independently - allow partial results
+        self.diet_plan = None
+        self.exercise_plan = None
+        
+        try:
             self.diet_plan = DietPlan.objects.filter(user=request.user).latest('date_created')
+        except DietPlan.DoesNotExist:
+            pass  # Diet plan is optional
+            
+        try:
             self.exercise_plan = ExercisePlan.objects.filter(user=request.user).latest('date_created')
-        except (UserHealthProfile.DoesNotExist, DietPlan.DoesNotExist, ExercisePlan.DoesNotExist):
+        except ExercisePlan.DoesNotExist:
+            pass  # Exercise plan is optional
+        
+        # Only redirect if BOTH are missing
+        if not self.diet_plan and not self.exercise_plan:
             messages.error(request, "No plans found. Please generate new plans.")
             return redirect('diet_exercise:health-profile')
         
@@ -224,20 +242,22 @@ class PlanResultsView(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         
         context['profile'] = self.profile
-        
-        # Parse JSON meal data
-        try:
-            self.diet_plan.meal_data = {
-                'breakfast': json.loads(self.diet_plan.breakfast) if self.diet_plan.breakfast else [],
-                'lunch': json.loads(self.diet_plan.lunch) if self.diet_plan.lunch else [],
-                'dinner': json.loads(self.diet_plan.dinner) if self.diet_plan.dinner else [],
-                'snacks': json.loads(self.diet_plan.snacks) if self.diet_plan.snacks else []
-            }
-        except json.JSONDecodeError:
-            self.diet_plan.meal_data = {}
-            
         context['diet_plan'] = self.diet_plan
         context['exercise_plan'] = self.exercise_plan
+        
+        # Parse JSON meal data if diet plan exists
+        if self.diet_plan:
+            try:
+                self.diet_plan.meal_data = {
+                    'breakfast': json.loads(self.diet_plan.breakfast) if self.diet_plan.breakfast else [],
+                    'lunch': json.loads(self.diet_plan.lunch) if self.diet_plan.lunch else [],
+                    'dinner': json.loads(self.diet_plan.dinner) if self.diet_plan.dinner else [],
+                    'snacks': json.loads(self.diet_plan.snacks) if self.diet_plan.snacks else []
+                }
+            except json.JSONDecodeError:
+                self.diet_plan.meal_data = {}
+            context['diet_plan'] = self.diet_plan
+            
         return context
 
 
