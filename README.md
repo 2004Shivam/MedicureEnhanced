@@ -221,3 +221,6 @@ Contributions are welcome! Please follow these steps:
 <p align="center">
   Built with ❤️ by <b>Shivam</b> | © 2026
 </p>
+
+Updated for Git practical submission.
+
