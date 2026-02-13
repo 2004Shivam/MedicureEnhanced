@@ -166,6 +166,16 @@ docker compose exec web python manage.py createsuperuser
 | 🌐 Web App | [http://localhost:8000](http://localhost:8000) |
 | 🔧 Admin Panel | [http://localhost:8000/admin](http://localhost:8000/admin) |
 
+### 🛠️ Troubleshooting
+
+**Issue: `ModuleNotFoundError: No module named 'pkg_resources'`**
+- This is due to `setuptools` removing `pkg_resources` in recent versions.
+- **Fix:** Ensure `Dockerfile` pins `setuptools==69.5.1`.
+
+**Issue: `psycopg2.OperationalError: server does not support SSL`**
+- Occurs when running locally with `DEBUG=True`.
+- **Fix:** `settings.py` is configured to only require SSL when `DEBUG=False` (Production). ensure your `.env` has `DEBUG=True` for local development.
+
 ---
 
 ## ☁️ Deployment
