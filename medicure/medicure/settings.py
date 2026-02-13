@@ -154,11 +154,12 @@ if os.getenv('POSTGRES_DB'):
             'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
             'HOST': os.getenv('POSTGRES_HOST'),
             'PORT': os.getenv('POSTGRES_PORT'),
-            'OPTIONS': {
-                'sslmode': 'require',
-            },
         }
     }
+    
+    # Only enable SSL for production (when not in DEBUG mode)
+    if not DEBUG:
+        DATABASES['default']['OPTIONS'] = {'sslmode': 'require'}
 else:
     DATABASES = {
         'default': {

@@ -16,13 +16,14 @@ RUN apt-get update && apt-get install -y \
 
 # Install python dependencies
 COPY requirements.txt /app/
-RUN pip install --upgrade pip
+RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
 
 # Copy project
 COPY . /app/
 
 # Collect static files for WhiteNoise
+RUN pip install setuptools==69.5.1
 RUN python manage.py collectstatic --noinput
 
 # Expose port (not strictly necessary but good practice)
