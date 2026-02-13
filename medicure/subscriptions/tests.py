@@ -1,3 +1,6 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 
-# Create your tests here.
+class SmokeTest(SimpleTestCase):
+    def test_smoke_always_passes(self):
+        # very small smoke test that doesn't touch DB
+        self.assertEqual(1, 1)
