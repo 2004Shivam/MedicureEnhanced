@@ -174,9 +174,9 @@ This project is optimized for **free-tier cloud deployment**:
 
 | Component | Service | Cost |
 |:----------|:--------|:----:|
-| **Database** | [Neon.tech](https://neon.tech) | $0 |
-| **Application** | [Render.com](https://render.com) | $0 |
-| **Keep-Alive** | [UptimeRobot](https://uptimerobot.com) | $0 |
+| **Database** | [Neon.tech](https://neon.tech) | Rs.0 |
+| **Application** | [Render.com](https://render.com) | Rs.0 |
+| **Keep-Alive** | [UptimeRobot](https://uptimerobot.com) | Rs.0 |
 
 See `deployment_plan.md` for step-by-step instructions.
 
