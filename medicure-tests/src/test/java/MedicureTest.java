@@ -30,7 +30,7 @@ public class MedicureTest {
 
         System.out.println("Opening MediCure website...");
 
-        driver.get("https://medicure-enhanced.onrender.com");
+        driver.get("https://medicureenhanced.onrender.com/users/login/");
 
         System.out.println("Page Title: " + driver.getTitle());
         System.out.println("Current URL: " + driver.getCurrentUrl());

@@ -2,12 +2,12 @@
 <testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2026-03-04T23:14:37 IST" name="Surefire suite" finished-at="2026-03-04T23:14:41 IST" duration-ms="4358">
+  <suite started-at="2026-03-04T23:32:59 IST" name="Surefire suite" finished-at="2026-03-04T23:33:02 IST" duration-ms="2414">
     <groups>
     </groups>
-    <test started-at="2026-03-04T23:14:37 IST" name="Surefire test" finished-at="2026-03-04T23:14:41 IST" duration-ms="4358">
+    <test started-at="2026-03-04T23:32:59 IST" name="Surefire test" finished-at="2026-03-04T23:33:02 IST" duration-ms="2414">
       <class name="MedicureTest">
-        <test-method signature="openWebsite()[pri:0, instance:MedicureTest@4450d156]" started-at="2026-03-04T23:14:37 IST" name="openWebsite" finished-at="2026-03-04T23:14:41 IST" duration-ms="4316" status="PASS">
+        <test-method signature="openWebsite()[pri:0, instance:MedicureTest@4461c7e3]" started-at="2026-03-04T23:33:00 IST" name="openWebsite" finished-at="2026-03-04T23:33:02 IST" duration-ms="2371" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- openWebsite -->
