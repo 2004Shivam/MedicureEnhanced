@@ -4,10 +4,10 @@ pipeline {
     stages {
 
         stage('Clone Repository') {
-            steps {
-                git 'https://github.com/2004Shivam/MedicureEnhanced.git'
-            }
-        }
+    steps {
+        git branch: 'main', url: 'https://github.com/2004Shivam/MedicureEnhanced.git'
+    }
+}
 
         stage('Run Selenium Tests') {
             steps {
