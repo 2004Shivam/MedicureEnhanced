@@ -1,0 +1,30 @@
+pipeline {
+
+    agent any
+
+    tools {
+        maven 'Maven3'
+    }
+
+    stages {
+
+        stage('Clone Repository') {
+            steps {
+                git 'https://github.com/2004Shivam/MedicureEnhanced.git'
+            }
+        }
+
+        stage('Build Project') {
+            steps {
+                sh 'mvn clean install'
+            }
+        }
+
+        stage('Run Selenium Tests') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+
+    }
+}
