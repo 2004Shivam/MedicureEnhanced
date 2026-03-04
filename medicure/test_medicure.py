@@ -1,17 +1,17 @@
+from django.test import LiveServerTestCase
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
 import time
 
-options = Options()
-options.add_argument("--start-maximized")
+class MedicureTest(LiveServerTestCase):
 
-driver = webdriver.Chrome(options=options)
+    def setUp(self):
+        self.driver = webdriver.Chrome()
 
-driver.get("http://127.0.0.1:8000")
+    def test_homepage_title(self):
+        self.driver.get(self.live_server_url)
+        time.sleep(2)
+        self.assertIn("Medicure", self.driver.title)
 
-assert "MediCure" in driver.title
-
-time.sleep(3)
-driver.quit()
-
-print("Test Passed Successfully")
+    def tearDown(self):
+        self.driver.quit()
