@@ -24,3 +24,7 @@ staticfiles/
 # OS
 .DS_Store
 Thumbs.db
+.env
+*.env
+render.env
+twilio_2FA_recovery_code.txt
