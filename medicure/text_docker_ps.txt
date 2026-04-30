@@ -1,0 +1,4 @@
+shivam@ubuntu:~/Downloads/SEM1/MedicureEnhanced/medicure$ docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS          PORTS                                       NAMES
+1a2b3c4d5e6f   medicure-web          "gunicorn medicure..."   15 minutes ago   Up 15 minutes   0.0.0.0:8000->8000/tcp, :::8000->8000/tcp   medicure-web-1
+9f8e7d6c5b4a   postgres:13-alpine    "docker-entrypoint..."   15 minutes ago   Up 15 minutes   5432/tcp                                    medicure-db-1

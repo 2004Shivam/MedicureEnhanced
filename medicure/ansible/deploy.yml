@@ -1,0 +1,166 @@
+---
+# ============================================================
+# Ansible Playbook: Continuous Deployment of Medicure Application
+# ============================================================
+# This playbook automates the deployment of the Medicure
+# AI-Powered Healthcare application using Docker Compose.
+#
+# Usage: ansible-playbook -i inventory.ini deploy.yml
+# ============================================================
+
+- name: Continuous Deployment of Medicure Application
+  hosts: webservers
+  gather_facts: yes
+
+  vars:
+    project_src: "/home/shivam/Downloads/SEM1/MedicureEnhanced/medicure"
+    app_name: "medicure"
+
+  tasks:
+    # ----------------------------------------------------------
+    # Step 1: Pre-Deployment Health Checks
+    # ----------------------------------------------------------
+    - name: "Step 1.1 - Verify Docker is installed"
+      command: docker --version
+      register: docker_version
+      changed_when: false
+
+    - name: "Step 1.2 - Display Docker version"
+      debug:
+        msg: "Docker Version: {{ docker_version.stdout }}"
+
+    - name: "Step 1.3 - Verify Docker Compose is available"
+      command: docker compose version
+      register: compose_version
+      changed_when: false
+
+    - name: "Step 1.4 - Display Docker Compose version"
+      debug:
+        msg: "Docker Compose Version: {{ compose_version.stdout }}"
+
+    - name: "Step 1.5 - Check if project directory exists"
+      stat:
+        path: "{{ project_src }}"
+      register: project_dir
+
+    - name: "Step 1.6 - Confirm project directory"
+      debug:
+        msg: "Project directory {{ project_src }} exists: {{ project_dir.stat.exists }}"
+
+    # ----------------------------------------------------------
+    # Step 2: Pre-Deployment Cleanup
+    # ----------------------------------------------------------
+    - name: "Step 2.1 - Stop any existing containers"
+      command: docker compose down
+      args:
+        chdir: "{{ project_src }}"
+      register: compose_down
+      ignore_errors: yes
+
+    - name: "Step 2.2 - Display cleanup output"
+      debug:
+        msg: "{{ compose_down.stderr_lines | default(['No containers to stop']) }}"
+
+    # ----------------------------------------------------------
+    # Step 3: Verify Configuration Files
+    # ----------------------------------------------------------
+    - name: "Step 3.1 - Check docker-compose.yml exists"
+      stat:
+        path: "{{ project_src }}/docker-compose.yml"
+      register: compose_file
+
+    - name: "Step 3.2 - Confirm docker-compose.yml"
+      debug:
+        msg: "docker-compose.yml found: {{ compose_file.stat.exists }}"
+
+    - name: "Step 3.3 - Check .env file exists"
+      stat:
+        path: "{{ project_src }}/.env"
+      register: env_file
+
+    - name: "Step 3.4 - Confirm .env file"
+      debug:
+        msg: ".env file found: {{ env_file.stat.exists }}"
+
+    - name: "Step 3.5 - Check Dockerfile exists"
+      stat:
+        path: "{{ project_src }}/Dockerfile"
+      register: dockerfile
+
+    - name: "Step 3.6 - Confirm Dockerfile"
+      debug:
+        msg: "Dockerfile found: {{ dockerfile.stat.exists }}"
+
+    # ----------------------------------------------------------
+    # Step 4: Build and Deploy Application
+    # ----------------------------------------------------------
+    - name: "Step 4.1 - Build and start application with Docker Compose"
+      command: docker compose up -d --build
+      args:
+        chdir: "{{ project_src }}"
+      register: compose_up
+
+    - name: "Step 4.2 - Display deployment output"
+      debug:
+        msg: "{{ compose_up.stderr_lines }}"
+
+    # ----------------------------------------------------------
+    # Step 5: Post-Deployment Verification
+    # ----------------------------------------------------------
+    - name: "Step 5.1 - Wait for application to be ready on port 8000"
+      wait_for:
+        host: localhost
+        port: 8000
+        delay: 5
+        timeout: 60
+        state: started
+
+    - name: "Step 5.2 - Check running containers"
+      command: docker ps --format "table {{'{{'}}.Names{{'}}'}}\t{{'{{'}}.Status{{'}}'}}\t{{'{{'}}.Ports{{'}}'}}"
+      register: running_containers
+      changed_when: false
+
+    - name: "Step 5.3 - Display running containers"
+      debug:
+        msg: "{{ running_containers.stdout_lines }}"
+
+    - name: "Step 5.4 - Verify web application is responding"
+      uri:
+        url: "http://localhost:8000"
+        method: GET
+        status_code: 200
+        timeout: 30
+      register: health_check
+      retries: 3
+      delay: 5
+
+    - name: "Step 5.5 - Display health check result"
+      debug:
+        msg: "Application is UP! HTTP Status Code: {{ health_check.status }}"
+
+    - name: "Step 5.6 - Check application logs"
+      command: docker compose logs --tail=10 web
+      args:
+        chdir: "{{ project_src }}"
+      register: app_logs
+      changed_when: false
+
+    - name: "Step 5.7 - Display application logs"
+      debug:
+        msg: "{{ app_logs.stdout_lines }}"
+
+    # ----------------------------------------------------------
+    # Step 6: Deployment Summary
+    # ----------------------------------------------------------
+    - name: "Step 6 - Deployment Summary"
+      debug:
+        msg:
+          - "=============================================="
+          - "  DEPLOYMENT SUCCESSFUL!"
+          - "=============================================="
+          - "  Application: Medicure - AI Healthcare"
+          - "  URL: http://localhost:8000"
+          - "  Containers Running: {{ running_containers.stdout_lines | length - 1 }}"
+          - "  Health Check: HTTP {{ health_check.status }}"
+          - "  Deployed At: {{ ansible_date_time.iso8601 }}"
+          - "=============================================="

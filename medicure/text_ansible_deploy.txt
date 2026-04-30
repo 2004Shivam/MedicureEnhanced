@@ -1,0 +1,27 @@
+shivam@ubuntu:~/Downloads/SEM1/MedicureEnhanced/medicure/ansible$ ../ansible-venv/bin/ansible-playbook -i inventory.ini deploy.yml
+
+PLAY [Deploy Medicure Application] *************************************************************************************************************
+
+TASK [Gathering Facts] *************************************************************************************************************************
+ok: [localhost]
+
+TASK [Check if .env file exists] ***************************************************************************************************************
+ok: [localhost]
+
+TASK [Verify Docker is available] **************************************************************************************************************
+ok: [localhost]
+
+TASK [Tear down existing Docker containers] ****************************************************************************************************
+changed: [localhost]
+
+TASK [Build Docker images] *********************************************************************************************************************
+changed: [localhost]
+
+TASK [Start Docker containers] *****************************************************************************************************************
+changed: [localhost]
+
+TASK [Wait for web service to be fully responsive] *********************************************************************************************
+ok: [localhost]
+
+PLAY RECAP *************************************************************************************************************************************
+localhost                  : ok=25   changed=10   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0   

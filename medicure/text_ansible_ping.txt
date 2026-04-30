@@ -1,0 +1,5 @@
+shivam@ubuntu:~/Downloads/SEM1/MedicureEnhanced/medicure/ansible$ ../ansible-venv/bin/ansible all -i inventory.ini -m ping
+localhost | SUCCESS => {
+    "changed": false,
+    "ping": "pong"
+}
